@@ -111,7 +111,7 @@
 
 因为二进制和十进制描述位信息的缺点[^注释1]，引入了十六进制表示法来描述位信息。下图是二进制、十进制、十六进制相关联的转换表
 
-![](image/image_TBDbMrCjeZ.png)
+![](image/image_baX9ZU125G.png)
 
 在 C语言 中，以 0x 或 0X 开头的数字常量被解释为十六进制，十六进制中的“A→F”既可以写成大写也可以写成小写。
 
@@ -135,7 +135,7 @@
 
 计算机和编译器支持多种不同方式编码的数字格式，如不同长度的整数和浮点数。下面是C语言中支持的各种数据类型以及其字节长度：
 
-![](image/image_122OBAEFC2.png)
+![](image/image_kz_FDOGmRw.png)
 
 有些数据类型的确切字节数取决于该程序是如何被编译的——32位or64位
 
@@ -165,7 +165,7 @@ unsigned long、unsigned long int、long unsigned、long unsigned int均表示�
 
     小端法：数据的高位放置在内存的高位，数据的低位放置在内存的低位
 
-    ![](image/image_n7X4sgqvr9.png)
+    ![](image/image_78jeTfsNss.png)
     > **大多数Intel兼容机均使用小端模式，大多数IBM、Oracle使用的是大端模式**
     > ✨目前许多比较新的微处理器是双端法(bi-endian)，可以把它们配置成大端或者小端的机器运行。但是实际情况是，一旦选择了操作系统那么字节的顺序也就固定了下来——比如ARM是采用双端法，但是其上最常见的两种操作系统Android、IOS均只支持小端
     > 大多数情况不需要考虑字节顺序均可以得到相同的结果，但是有时候字节顺序会成为问题：
@@ -178,7 +178,7 @@ unsigned long、unsigned long int、long unsigned、long unsigned int均表示�
 
         当检查机器级程序代码时，可能会涉及到查看表示整数数据的字节序列，如下所示：
 
-        ![](image/image_P0tFkwLBqq.png)
+        ![](image/image_gvGqr63FYm.png)
 
         在4004d3地址处的“01 05 43 0b 20 00 低到高”指令，经过反汇编工具得到该机器指令表示的意义是“x86指令 add %eax,0x200b43(%rip)”，指令的含义是采用相对寄存器寻址方式，将内存地址(%rip+0x200b43)上的值与%eax寄存器值相加写回%eax，而这里如果采用小端，那么是%rip+0x00200b43，如果采用大端那么是%rip+0x430b2000
     3.  程序规避正常系统的类型
@@ -208,7 +208,7 @@ unsigned long、unsigned long int、long unsigned、long unsigned int均表示�
 
 以下面的sum C子程序为例，可以看到指令编码是不同的
 
-![](image/image_FU71MPV1fz.png)
+![](image/image_jwor7i7DNi.png)
 
 即使是同样的程序，运行在不同的机器类型/操作系统上也使用不同的且不兼容的指令和编码方式——二进制代码是不兼容的
 
@@ -218,7 +218,7 @@ unsigned long、unsigned long int、long unsigned、long unsigned int均表示�
 
 > *Since binary values are at the core of how computers encode, store, and manipulate information, a rich body of mathematical knowledge has evolved around the study of the values 0 and 1*
 
-![](image/image_Nqqo00TJ_K.png)
+![](image/image_wOCC1cNjW3.png)
 
 也可以将上述的按位运算拓展到位向量的运算，原理仍是向量对应位按位运算
 
@@ -228,7 +228,7 @@ unsigned long、unsigned long int、long unsigned、long unsigned int均表示�
 
 之前提到的"|、&、\~、^"均可用到C语言的任何整数类型上，一般是将整数值转换为二进制来执行对应的布尔运算，最后再将二进制结果转变为十六进制，如下所示：
 
-![](image/image_hj5GjxHqy_.png)
+![](image/image_CC_0GS7_fY.png)
 
 使用异或运算，我们可以实现一种更具有空间优势（不需要第三个中间变量来暂存值）的交换两个变量值的技术：
 
@@ -256,7 +256,7 @@ void swap(int *x,int *y){
 
 C 还提供了一组逻辑运算符 ||、&& 和 !，分别对应于逻辑的 or、and 和 not 操作。逻辑运算的操作和位操作截然不同：1. 逻辑操作对待任何非0数据为True，对待0为False。下面是一些逻辑表达式的例子：
 
-![](image/image_4sB5Zd3p66.png)
+![](image/image_c6Z6V8gi41.png)
 
 仅在运算数据为0或1时，位运算和逻辑运算结果等价
 
@@ -284,25 +284,25 @@ C 还提供了一组移位操作，用于将位模式左移和右移
 
 移位示例如下所示：
 
-![](image/image_9oFm1LkcXK.png)
+![](image/image_kJvnKlsLzk.png)
 
 > ✨C 标准没有精确定义哪种类型的右移应与有符号数一起使用——可以使用算术移位或逻辑移位[^注释3]。然而，在实践中，几乎所有编译器/机器组合都对**有符号数据使用算术右移**，并且许多程序员认为情况就是如此。另一方面，对于**无符号数据，右移必须是逻辑的。**
 
 > ✨若k很大时移动k位，C语言很小心的规避了这种情况，实际上的位移量是k%w(w为数据宽度)。但是这种移位法C语言并不保证，因此应该保证位移量小于数据位宽。但Java是特别要求按照k%w移位的
 >
-> ![](image/image_Xf37iiweyk.png)
+> ![](image/image_rVv6ngc9V4.png)
 
 # 2.2 *Integer Representations*
 
 下图列出了引入的数学术语，用于精确定义和描述计算机如何对整数数据进行编码和操作。
 
-![](image/image_PaICXcNon9.png)
+![](image/image_jB9lzjiLbG.png)
 
 ## 2.2.1 *Integral Data Types*
 
 C提供了大量的整数类型[^注释4]来表示有限范围内的整数，下面Figure2.9和Figure2.10介绍了32位和64位程序中这些整数类型（除char外默认有符号）的取值范围：
 
-![](image/image_by7sYHyaj5.png)
+![](image/image_5inFdRExAp.png)
 
 从上面两张图中可以得到：
 
@@ -311,7 +311,7 @@ C提供了大量的整数类型[^注释4]来表示有限范围内的整数，下
 
 > ✨C语言定义了每种数据类型所必须能表示的最小的数据范围。如下图Figure2.11所示
 >
-> ![](image/image_M2ZVDzgtLY.png)
+> ![](image/image_ofFnEmqVSG.png)
 >
 > 可以得到：
 >
@@ -336,7 +336,7 @@ $$
 >
 > 证明：
 >
-> ![](image/image_JJ7muKTflS.png)
+> ![](image/image_nMpLR96C-7.png)
 
 ## 2.2.3 *Two’s-Complement Encodings*
 
@@ -353,19 +353,19 @@ $$
 
 > ✨同无符号编码的唯一性，二进制补码也具有唯一性：每一个二进制对应唯一的一个表示范围内的十进制数，而每一个表示范围内的十进制数都有唯一一个二进制对应
 >
-> ![](image/image_BklKyYH5gv.png)
+> ![](image/image_NjLrVLLTE3.png)
 
 > 🍋  1.  造成二进制补码不对称的原因——一半的位模式(符号位为1的位模式)表示负数，而另一半用来表示非负数，包括了0，所以导致正数少了一个
 >
 > 1.  最大的无符号数值等于补码最大值的两倍+1
 
-> 🍉C语言标准并未要求必须用二进制补码表示有符号数[^注释6]，但是几乎所有机器都是这么做的。程序员如果希望代码具有最大可移植性，能够在所有可能的机器上运行，那么除了图2-11[🖼️ 图片](image/image_DZUSF_Ow-Z.png "🖼️ 图片")所示的那些范围之外，我们不应该假设任何可表示的数值范围，也不应该假设有符号数会使用何种特殊的表示方式。另一方面，许多程序的书写都假设用补码来表示有符号数，并且具有图2-9和图2-10所示的“典型的”取值范围[🖼️ 图片](image/image_R0RWysq0a5.png "🖼️ 图片")，这些程序也能够在大量的机器和编译器上移植。
+> 🍉C语言标准并未要求必须用二进制补码表示有符号数[^注释6]，但是几乎所有机器都是这么做的。程序员如果希望代码具有最大可移植性，能够在所有可能的机器上运行，那么除了图2-11[🖼️ 图片](image/image_ctPpBAVeHq.png "🖼️ 图片")所示的那些范围之外，我们不应该假设任何可表示的数值范围，也不应该假设有符号数会使用何种特殊的表示方式。另一方面，许多程序的书写都假设用补码来表示有符号数，并且具有图2-9和图2-10所示的“典型的”取值范围[🖼️ 图片](image/image_M32qqgQxCk.png "🖼️ 图片")，这些程序也能够在大量的机器和编译器上移植。
 >
 > C库中的文件\<lmits.h>定义了一组常量，来限定编译器运行的这台机器的不同整型数据类型的取值范围。比如，它定义了常量INT MAX、INT MIN和UINT MAX,它们描述了有符号和无符号整数的范围。
 
-![](image/image_iwshTiSYWT.png)
+![](image/image_pRDiL-uX1y.png)
 
-![](image/image_vNyfNABN7b.png)
+![](image/image_56qWDyn2XY.png)
 
 ## 2.2.4 *Conversions between Signed and Unsigned*
 
@@ -388,7 +388,7 @@ $$
 
 差不多可以理解成一个环形：
 
-![](image/0a7fda6d7227a743ac73038f0887dce_UQgdYi60RG.jpg)
+![](image/0a7fda6d7227a743ac73038f0887dce_ApPWYVA40v.jpg)
 
 ## 2.2.5 *Signed versus Unsigned in C*
 
@@ -406,13 +406,13 @@ C语言中的类型转换发生在：
 >
 > 下图是这种不直观行为的一些例子：
 >
-> ![](image/image_S2v_Bq73hi.png)
+> ![](image/image_Dspuz885sc.png)
 >
 > > 为什么将$TMin_{32}$写为-2147483647-1
 > >
 > > 在C头文件\<limits.h>中就将INT\_MIN定义为-INT\_MAX - 1。原因是补码的不对称性以及C语言的转换规则之间的奇怪的交互迫使进行这样的表示
 > >
-> > ![](image/image_qR6n_kDPWJ.png)
+> > ![](image/image_qfPwmIPNzV.png)
 
 ## 2.2.6\* Expanding the Bit Representation of a Number\*
 
@@ -420,11 +420,11 @@ C语言中的类型转换发生在：
 
 无符号数进行零扩展，规则如下：
 
-![](image/image_nt3rpif2ch.png)
+![](image/image_rnjgK-weBj.png)
 
 有符号数进行符号扩展，规则如下：
 
-![](image/image_L0bWMTsN_z.png)
+![](image/image_8lv2AlRC6B.png)
 
 对于符号扩展保持了补码值的证明可以从证明原来的MSB表示的$-x_{w-1}2^{w-1}$等于扩展后的$-x_{w-1}2^{w-1+k}+\sum _{i=w-1} ^{w-1+k-1} x_i 2^i$
 
@@ -432,7 +432,7 @@ C语言中的类型转换发生在：
 >
 > 如下面的程序允运行结果所示：
 >
-> ![](image/image_6wP18BElUY.png)
+> ![](image/image_GY7AOb5Rje.png)
 >
 > **C语言标准要求先进行位扩展再进行符号转换**
 >
@@ -445,21 +445,21 @@ C语言中的类型转换发生在：
 
 **无符号数的截断规则如下——直接舍去多余的高位**
 
-![](image/image_66m2HZpBHK.png)
+![](image/image_UXlJU00msx.png)
 
 **补码的截断规则如下——舍去多余的高位，然后剩下的位序列转补码**
 
-![](image/image_aPlYss8vzl.png)
+![](image/image_-ucsETh0qg.png)
 
 ## 2.2.8 *Advice on Signed versus Unsigned*
 
 C语言中对于有符号数和无符号数的建议主要是在之前提到的“C语言对同时含有无符号数有符号数的默认隐式转换”上，如下面的练习：
 
-![](image/image_lKljwPz2fA.png)
+![](image/image_9FKSH73dZB.png)
 
 length采用的是无符号类型，因此length-1会默认的结果是无符号，当length≥1时结果正常，但是当length=0时，该结果是UINT\_MAX，造成了内存溢出。可以将length改为int或者判断i\<length
 
-![](image/image_8PcXllRs93.png)
+![](image/image__WwpeB0-Lp.png)
 
 因为strlen的返回值size\_t类型为无符号类型，所以其相加的结果也默认为无符号类型，结果是一定≥0的。可以比较strlen(s)>strlen(t)
 
@@ -481,7 +481,7 @@ $$
 
 那么可以定义二进制的无符号加法如下：
 
-![](image/image_yPO-6jJe7X.png)
+![](image/image_SjDCOoAmbK.png)
 
 $$
 x+{ }_{w}^{\mathrm{u}} y=\left\{\begin{array}{ll}x+y, & x+y<2^{w} \quad \text { Normal } \\x+y-2^{w}, & 2^{w} \leq x+y<2^{w+1} \quad \text { Overflow }\\\end{array}\right.
@@ -503,7 +503,7 @@ $$
 
 给定二进制补码表示的w位二进制数x、y，x和y满足$-2^{w-1} \leq x, y \leq 2^{w-1}-1$，则x+y需要满足$-2^{w} \leq x+y \leq 2^{w}-2$，潜在也存在字长膨胀的现象。因此**截断后w位并按照二进制补码解析**。则二进制补码加法$x+{ }_{w}^{\mathrm{t}} y$[^注释12]可以定义为：
 
-![](image/image_v66hhyxLX3.png)
+![](image/image_UtiaIoFDlQ.png)
 
 $$
 x+_{w}^{\mathrm{t}} y=\left\{\begin{array}{ll}x+y-2^{w}, & 2^{w-1} \leq x+y \quad \text { Positive overflow } \\ x+y, & -2^{w-1} \leq x+y<2^{w-1} \quad \text { Normal } \\ x+y+2^{w}, & x+y<-2^{w-1} \quad \text { Negative overflow }\end{array}\right.
@@ -515,25 +515,25 @@ $$
 >
 > 证明：
 >
-> ![](image/Screenshot_20231017_141603_com.jideos.jnotes_I9Dx4.jpg)
+> ![](image/Screenshot_20231017_141603_com.jideos.jnotes_VPD5m.jpg)
 >
-> ![](image/Screenshot_20231017_141610_com.jideos.jnotes_OJtsV.jpg)
+> ![](image/Screenshot_20231017_141610_com.jideos.jnotes_NewkM.jpg)
 >
 > **利用无符号数加法和二进制补码加法的位级表示一致的定律，大多数机器使用同样的机器指令来执行无符号数或者有符号数加法**
 
 > 🍉检测补码加法中的溢出：**正数+正数=负数、负数+负数=正数**时出现溢出
 >
-> ![](image/image_oDQ5YBmxiG.png)
+> ![](image/image_IG4ghQDeu-.png)
 
 > 无符号数和有符号数补码的二进制表示是一个回环，有无溢出这个回环的加减结果都一样的
 >
-> ![](image/image_pXW_fyDsla.png)
+> ![](image/image_pFu2h08qZQ.png)
 >
 > 由于环形的原因：无论加法是否溢出，而(x+y)-y总是会求值得到x。
 
 > **构建函数时一定要考虑边界值INT\_MIN对整个函数的影响**
 >
-> ![](image/image_wf0cIGKLUr.png)
+> ![](image/image_8_D8_T8MAp.png)
 >
 > 当y=INT\_MIN时，不考虑INT的限制，-y应该是正数，那么x为非负数，y为正数时发生溢出，x负数时不发生溢出。但是因为INT的限制→-y还是负数，则当x负数时才发生溢出
 
@@ -580,25 +580,25 @@ $$
 
 > 🐳**同加法一样，无符号数乘法的积和补码乘法的积的截断w位具有同样的位级表示**
 >
-> ![](image/image_EiMDvH4N2G.png)
+> ![](image/image_LFDEWOvdBq.png)
 >
 > 证明：
 >
-> ![](image/image_nyS8fSfyfE.png)
+> ![](image/image_qUs7M-FsKf.png)
 
 > 🐳判断乘法溢出：
 >
-> ![](image/image_vYA5fETD2v.png)
+> ![](image/image_a2BDnthbuD.png)
 >
-> ![](image/Screenshot_20231019_200626_com.jideos.jnotes_pps9Q.jpg)
+> ![](image/Screenshot_20231019_200626_com.jideos.jnotes_t2lbp.jpg)
 >
-> ![](image/Screenshot_20231019_200633_com.jideos.jnotes_viUN-.jpg)
+> ![](image/Screenshot_20231019_200633_com.jideos.jnotes_35nxo.jpg)
 >
 > 上述定义的函数是一种检测乘法溢出的方法
 
 > 结合32位、64位判断乘法溢出
 >
-> ![](image/image_qGrowutcsq.png)
+> ![](image/image_9v92WSIEy3.png)
 >
 > ```c
 > /Determine whether the arguments can be multiplied without overflow
@@ -613,7 +613,7 @@ $$
 >
 > malloc系统函数的参数是32位的，给定64位仍是按32位去使用，改进的方法是当超出范围后返回null
 >
-> ![](image/image_K8u8Nia8yW.png)
+> ![](image/image_FSNVoXJk68.png)
 
 ## 2.3.6 *Multiplying by Constants*
 
@@ -621,7 +621,7 @@ $$
 
 1.  首先考虑乘以二的幂的情况
 
-    ![](image/image_Bohx1Wb5Hw.png)
+    ![](image/image_Z6hxosQq8O.png)
 
     x乘以2的k次方的整数运算，即将x左移k位
 
@@ -636,7 +636,7 @@ $$
     $$
     而若**k是负数，则使用2的幂作差的形式凑k**。比如当k=-6=2-8，故x\*k=(x<<1)-(x<<3)
 
-    ![](image/image_bcloWsY4sv.png)
+    ![](image/image_KG774gZ_ob.png)
     > 🐳而对于编译器两种形式的选择问题，这里假设加法和减法具有同样的性能。那么：
     >
     > 1.  当n=m时，选A——因为B需要做两次移位，一次减法
@@ -660,14 +660,14 @@ $$
 
 1.  无符号数除以2的幂——向0舍入
 
-    ![](image/image_ZzXLt-tZJ7.png)
+    ![](image/image_EGS8O46OmL.png)
 2.  有符号数除以2的幂
     1.  向下舍入：
 
-        ![](image/image_UrWhtzmrWV.png)
+        ![](image/image_AmOhkRBsRS.png)
     2.  向上舍入：
 
-        ![](image/image_u07wcG0oKV.png)
+        ![](image/image_gllUyAmgGs.png)
         $$
         （x+(1<<k)-1)>>k
         $$
@@ -676,7 +676,7 @@ $$
     $$
     x/2^k=(x<0?x+(1<<k)-1:x)>>k
     $$
-    ![](image/image_iI-srELbHi.png)
+    ![](image/image_lHzte0etxt.png)
     ```c
     int div16(int x){
         int sign=x>>31;//得到符号位
@@ -692,7 +692,7 @@ $$
 3.  无符号数和二进制补码的加法、乘法、除法、减法、非具有同样的位级表示
 4.  对于所有的表达式以及函数一定要考虑无符号数的边界值、二进制补码边界值的影响
 
-![](image/image_pMUoLnss8r.png)
+![](image/image_lJgexceiS6.png)
 
 A：x属于INT，对于INT\_MIN是False
 B：当x&7==7时，x低3位为111，则x<<29位，符号位为1小于0
@@ -715,7 +715,7 @@ G：\~y=-y-1，x\*(-y-1)=-xy-x+uy\*ux=-xy-x+xy=-x True
 
 使用二进制0.11……1代表略小于1的数字。例如0.111111代表$\frac{63}{64}$，我们**将使用****1.0-ε****代表这样的值**。而且二进制小数只能精确表示可以表示成$x\times 2^y$的数值，对于其他数值只能通过增加二进制小数位数来近似——**可以精确表示整数，但是小数得近似**
 
-![](image/image_iV4n87AF_D.png)
+![](image/image_DxPWxfChpa.png)
 
 ## 2.4.2 *IEEE Floating-Point Representation*
 
@@ -729,7 +729,7 @@ E表示阶码，即2的幂
 
 也因为这种表示方式，将浮点数的数据存储划分为三个域：符号位、阶码位及尾数位[^注释14]
 
-![](image/image_aoc07UXF1F.png)
+![](image/image_--XS9psK3R.png)
 
 上图为IEEE 754标准规定的单精度浮点数和双精度浮点数
 
@@ -768,7 +768,7 @@ E表示阶码，即2的幂
 
 ## 2.4.3 *Example Numbers*
 
-![](image/image_5d_9tgiaHb.png)
+![](image/image__StGwUN2Wa.png)
 
 1.  非规格化数的阶码位固定为0，值为1-7=-6，小数部分为1/8\~7/8
 2.  规格化数的阶码位是从1\~14，值为-6\~7，小数部分从1\~15/8
@@ -777,7 +777,7 @@ E表示阶码，即2的幂
 5.  从0\~无穷大的位表示解释为无符号整数，则是按照升序排列的（负数是降序）
     方便使用整数排序函数进行排序
 
-![](image/image_08ffVRmvqM.png)
+![](image/image_70tjA8880i.png)
 
 1.  +0.0是全0的二进制
 2.  最小的正非规格化数是：阶码位全0，尾数位为1
@@ -787,7 +787,7 @@ E表示阶码，即2的幂
 
 > 整数二进制转浮点数的方法
 >
-> ![](image/image_zlJANG0C2z.png)
+> ![](image/image_zJSOYfp9BY.png)
 >
 > 整数二进制转浮点数的方法是：**小数点在最后一位，通过左移小数点至1.xxxxx的形式，从而得到阶数和尾数**
 >
@@ -801,7 +801,7 @@ E表示阶码，即2的幂
 
 IEEE 定义了4种舍入的方法，默认的放啊是找最近的，其余的三种则是通过计算上界和下界
 
-![](image/image_-GlA6L-tKI.png)
+![](image/image_lhdGufIQeq.png)
 
 1.  round-to-even/round-to-nearest：默认的方法，取最近的匹配。而对于x.5这种中间值的舍入选择的是舍入到偶数
 2.  round-toward-zero：向0舍入，将正数向下舍入，负数向上舍入。舍入后的值x'满足$|x'|\leq|x|$
@@ -879,7 +879,7 @@ IEEE 标准指定浮点运算行为$x\bigodot y=Round(x \bigodot y)$的方法的
 
 > 强制转换
 >
-> ![](image/image_UVAbywAECu.png)
+> ![](image/image_6FSwDSUUKC.png)
 >
 > A. x为int，可以不损失不溢出的转double，double再转int也能找到对应的值——True
 >

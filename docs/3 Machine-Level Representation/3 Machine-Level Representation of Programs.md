@@ -227,7 +227,7 @@ x86-64机器代码和C语言原始代码差别很大，一些对于C程序员来
 
 `objdump -d mstore.o`
 
-![](image/image_zqKWUcErGz.png)
+![](image/image_nqUsmrtskv.png)
 
 在左侧，有 14 个十六进制字节值，按前面显示的字节序列列出，分为 1 到 5 个字节的组。这些组中的每一个都是一条指令，其汇编语言等效项显示在右侧
 
@@ -248,7 +248,7 @@ x86-64机器代码和C语言原始代码差别很大，一些对于C程序员来
 
 链接之后的可执行文件的反汇编和编译之后的可重定向目标文件的反汇编示例如下：
 
-![](image/image_mzztjtONZp.png)
+![](image/image__hz8WTbX1r.png)
 
 不同的点主要有：
 
@@ -263,11 +263,11 @@ x86-64机器代码和C语言原始代码差别很大，一些对于C程序员来
 1.  该汇编代码中包含一些程序员不太需要关注的信息
 2.  该汇编代码并未提供任何关于程序或是它怎么工作的描述
 
-![](image/image_8hA3duSC4V.png)
+![](image/image_BAlnCD-Dvi.png)
 
 下面是带有注释的、省略掉"."指令的汇编代码
 
-![](image/image_Utn1oAUv7s.png)
+![](image/image_I4u4lEbV2O.png)
 
 > 🐳对于一些应用程序，程序员必须用汇编代码来访问机器的低级特性。
 >
@@ -280,7 +280,7 @@ x86-64机器代码和C语言原始代码差别很大，一些对于C程序员来
 
 下图是C语言基本数据类型对应的x86-64表示
 
-![](image/image_DGPs_Xv94Q.png)
+![](image/image_UN6pdtewf4.png)
 
 int占4字节，指针8字节，long占8字节
 
@@ -290,7 +290,7 @@ int占4字节，指针8字节，long占8字节
 
 x86-64 中央处理单元 (CPU) 包含一组 16 个通用寄存器，用于存储 64 位值。这些寄存器用于存储整数数据和指针。如下图所示：
 
-![](image/image_V1k_SvZbgp.png)
+![](image/image_xA_3XYvUDw.png)
 
 这16个寄存器名均以“%r”起始，但是对于32位、16位、8位的寄存器数据则有不同的命名规则。这是由于指令集的变革
 
@@ -311,7 +311,7 @@ Figure3.2右侧的注释表示不太的寄存器在程序中充当的不同的�
 
 大多数指令都有一个或多个**操作数指示符来指出执行一个操作所需要的源数据值以及结果要存放的目标位置**。x86-64支持如下图所示的操作数格式：
 
-![](image/image_UXKZ65xTlq.png)
+![](image/image_6WDJrxlXVd.png)
 
 各种不同操作数的可能性可分为三种类型：
 
@@ -337,7 +337,7 @@ Figure3.2右侧的注释表示不太的寄存器在程序中充当的不同的�
 
 #### MOV类
 
-![](image/image_B11jIrSPCd.png)
+![](image/image_1yHA9EQxAK.png)
 
 MOV类指令可以不需要任何转变的将数据从源位置复制到目的位置
 
@@ -371,9 +371,9 @@ movq %rax,-12(%rbp)  %Register--Memory,8 bytes
 
     但是由于x86-64既有标准——对于任何产生32位结果的指令，若将结果放置在64位的目的处，则高位部分需设置为0。因此不存在movzlq
 
-    ![](image/image_mF_Lh-hcLi.png)
+    ![](image/image_wZ4tnCLL9W.png)
 
-    ![](image/image_7VFD4kzOWA.png)
+    ![](image/image_KREqBc2YVo.png)
 
 > cltq指令
 >
@@ -383,7 +383,7 @@ movq %rax,-12(%rbp)  %Register--Memory,8 bytes
 
 > 根据源、目数据类型填充mov指令
 >
-> ![](image/image_POBm4rUKiP.png)
+> ![](image/image_8guA4wDLX2.png)
 >
 > 需要注意的是，**内存地址总是用64位的**
 >
@@ -391,7 +391,7 @@ movq %rax,-12(%rbp)  %Register--Memory,8 bytes
 
 > 错误的指令示例：
 >
-> ![](image/image_oOUcxvuFTe.png)
+> ![](image/image_WiKqVKfLwL.png)
 >
 > 1.  内存引用需要使用64位
 > 2.  movl是32位，但是%rax是64位
@@ -405,7 +405,7 @@ movq %rax,-12(%rbp)  %Register--Memory,8 bytes
 
 以Figure3.7中的交换值的代码示例为例进行分析
 
-![](image/image_HL7oirC3cX.png)
+![](image/image_7-FAEwJ2pW.png)
 
 函数中的局部变量是被保存在寄存器中而不是内存中的。因为访问寄存器远快于访问主存
 
@@ -423,7 +423,7 @@ movq %rax,-12(%rbp)  %Register--Memory,8 bytes
 >
 > 中间变量使用%rax、%eax、%ax、%al
 >
-> ![](image/image_wegtqTALsg.png)
+> ![](image/image_PDrjJ4Opsp.png)
 >
 > 1.  long→long：64位到64位
 >
@@ -463,14 +463,14 @@ movq %rax,-12(%rbp)  %Register--Memory,8 bytes
 
 ## 3.4.4\* Pushing and Popping Stack Data\* %rsp
 
-![](image/image_YI12ztHX6m.png)
+![](image/image_quqdtxdsNw.png)
 
 栈顶采用“高到低”**向下增长**的形式且**栈顶有数据**
 
 入栈：先减栈顶指针8，然后入数据
 出栈：先取数据，再加栈顶指针8
 
-![](image/image_Ki_vykAvcS.png)
+![](image/image_YXMbO-JB5C.png)
 
 在x86-64中，栈存放在内存中的某个区域。采用**向下增长****的原则使得****栈顶元素的地址是所有栈中元素地址最低的**——但是根据惯例，画栈时栈顶在最下端，采用向上增长
 
@@ -484,7 +484,7 @@ movq %rax,-12(%rbp)  %Register--Memory,8 bytes
 
 算术逻辑运算指令根据操作类型分为：加载有效地址、一元操作、二元操作和移位
 
-![](image/image_JEwg58Cw-9.png)
+![](image/image_8jDhO6Uk4F.png)
 
 ## 3.5.1 *Load Effective Address*
 
@@ -494,7 +494,7 @@ eg：若%rdx值为x，则`leaq 7(%rdx,%rdx,4),%rax`即`%rax=5x+7`
 
 因此编译器可以使用leaq指令来完成一些优化操作，如下：
 
-![](image/image_5MaxwkGS6Q.png)
+![](image/image_AMzX6bcCAk.png)
 
 则若*x in %rdi,y in %rsi,z in %rdx*，那么x+4yi即`leaq (%rdi,%rsi,4),%rax`
 12z即3z\*4，`leaq (%rdx,%rdx,2)`,`%rdx,leaq(%rax,%rdx,4),%rax`
@@ -507,7 +507,7 @@ eg：若%rdx值为x，则`leaq 7(%rdx,%rdx,4),%rax`即`%rax=5x+7`
 
 一元操作只有一个操作数，这个操作数既是源操作数也是目的操作数，**操作数的类型只能是寄存器或者存储器**。例如C语言中的自增、自减运算符
 
-![](image/image_eHDzIsTl_N.png)
+![](image/image_-AcPUosdG1.png)
 
 ### 3.5.2.2 Binary Operations
 
@@ -515,13 +515,13 @@ eg：若%rdx值为x，则`leaq 7(%rdx,%rdx,4),%rax`即`%rax=5x+7`
 
 二元操作的第一个源操作数可以是立即数、寄存器或存储器；但是第二个操作数只能是寄存器/存储器[^注释9]
 
-![](image/image_9UGtSgEpKV.png)
+![](image/image_VjCf_nn_Lk.png)
 
 ## 3.5.3 *Shift Operations*
 
 移位操作是二元操作：第一个操作数是移位量，移位量的表示可以使用立即数也可以使用%cl；第二个操作数是要移位的值，类型是寄存器或者存储器
 
-![](image/image_zGh-5qMydi.png)
+![](image/image_Ohfvpv-UoD.png)
 
 > 🐳原则上虽然使用%cl表示移位量，范围为0\~255。但是在x86-64中，对w位长的数据值进行移位操作时，移位量是由%cl寄存器的低m位决定的，$ 2^m=w
 >   $**也就是移位量%w**
@@ -532,7 +532,7 @@ eg：若%rdx值为x，则`leaq 7(%rdx,%rdx,4),%rax`即`%rax=5x+7`
 
 > **使用异或指令实现寄存器的赋0**
 >
-> ![](image/image_2UfLH04Z5O.png)
+> ![](image/image_xQ1D_-gpDz.png)
 >
 > A.这条指令可以将%rdx置为0
 >
@@ -544,7 +544,7 @@ eg：若%rdx值为x，则`leaq 7(%rdx,%rdx,4),%rax`即`%rax=5x+7`
 
 下图描述了x86-64指令集中支持128位的整数乘法和除法
 
-![](image/image_8yyoBOB2M8.png)
+![](image/image_yDLFarnrL2.png)
 
 ### MUL
 
@@ -557,7 +557,7 @@ imulq指令有两种形式：
 
 `mulq S`同样隐含源操作数%rax，也同样是将R\[%rax]\*S的高位结果写R\[%rdx]，低位结果写R\[%rax]
 
-![](image/image_hyCbhknxMj.png)
+![](image/image_8FshZOCVRe.png)
 
 上图是一个计算64位无符号数乘以64位无符号数得到128位结果的函数，其对应的汇编代码如右半图所示。根据汇编代码可以得到如果想保留该128位的结果，需要使用两个movq；且根据机器的字节顺序，来决定先放高位还是先放低位
 
@@ -571,7 +571,7 @@ imulq指令有两种形式：
 >
 > 无符号数除法使用`divq`指令，寄存器`%rdx`需要事先清0
 
-![](image/image_WG5IZE8cal.png)
+![](image/image_6cZ_0DyJTG.png)
 
 # 3.6 *Control*
 
@@ -593,7 +593,7 @@ imulq指令有两种形式：
 3.  $SF=(t<0)$
 4.  $OF=(a<0\&b<0\&t>0)|(a>0\&b>0\&t<0)$
 
-> 🐳虽然leaq指令可以用来做一些简单的加法和乘法，但是它并不改变条件码。除此之外Figure3.10[🖼️ 图片](image/image_4pqo0v1Q0g.png "🖼️ 图片")中的所有指令均会改变条件码
+> 🐳虽然leaq指令可以用来做一些简单的加法和乘法，但是它并不改变条件码。除此之外Figure3.10[🖼️ 图片](image/image_7KpSlCDZau.png "🖼️ 图片")中的所有指令均会改变条件码
 >
 > 1.  对于逻辑指令OR、AND、XOR，会设置CF和OF为0
 > 2.  对于移位指令，CF设置为最后一个被移出的位，而OF设置为0
@@ -603,7 +603,7 @@ imulq指令有两种形式：
 
 1.  CMP指令类
 
-    ![](image/image_3P3wQ_Yo-2.png)
+    ![](image/image_cUYZzg4L58.png)
 
     cmp类指令执行的行为同sub指令，但是并不将结果写回，而是只根据结果来设置条件码。且使用的是ATT汇编格式，操作数是倒序的 `cmp S1,S2→S2-S1`
 
@@ -620,7 +620,7 @@ imulq指令有两种形式：
     无符号数大于等于：S2≥S1→\~CF
 2.  TEST指令类
 
-    ![](image/image_yKHNmll7GV.png)
+    ![](image/image_wot0heSaxq.png)
 
     test类指令执行的行为同and指令，但是并不将结果写回，而是只根据结果设置条件码
 
@@ -640,7 +640,7 @@ imulq指令有两种形式：
 
     指令的后缀表示的是所考虑的不同条件码的组合
 
-    ![](image/image_31OAH4AjUs.png)
+    ![](image/image_hVjgBXEZtd.png)
     > 🐳SET指令只产生8位结果，指令中的D可以是内存某个字节位置也可以是寄存器的低8位。若要产生16/32/64的结果，则需要使用movz指令将高位0扩展
     >
     > 一般比较64位a、b大小的指令序列如下：
@@ -661,7 +661,7 @@ imulq指令有两种形式：
 
 > *A jump instruction can cause the execution to switch to a completely new position in the program. These jump destinations are generally indicated in assembly code by a label*
 
-![](image/image_GU0Ts-8QN5.png)
+![](image/image_LbsOG1G89N.png)
 
 左图中列出了x86-64所支持的跳转指令。其中包括无条件跳转jmp指令以及结合条件码的某种组合的j型条件跳转指令
 
@@ -683,7 +683,7 @@ j指令均是直接跳转
 
 以下图的汇编代码为例，从左至右依次是其源汇编代码、可重定向目标代码以及可执行文件
 
-![](image/image_NCrBDPpqxP.png)
+![](image/image_p6JdKha26V.png)
 
 在左图汇编代码中有两条跳转指令，均采用直接跳转的方式。采用PC相对编码
 
@@ -693,7 +693,7 @@ j指令均是直接跳转
 
 ## 3.6.5 *Implementing Conditional Branches with Conditional Control*
 
-![](image/image_chcrZKriBF.png)
+![](image/image_5ZN0THEBtb.png)
 
 以上述代码为例展示C语言和汇编语言中的控制分支转换
 
@@ -721,7 +721,7 @@ done:
 
 > &&以及||的机器代码
 >
-> ![](image/image_PM0cWKvZsD.png)
+> ![](image/image_enqlqM_Oe1.png)
 
 ## 3.6.6 *Implementing Conditional Branches with Conditional Moves*
 
@@ -729,7 +729,7 @@ done:
 
 下图是一个可以用条件传送编译的示例代码：
 
-![](image/image_7StxFPyZi_.png)
+![](image/image_9zT2Bqm2cF.png)
 
 这种数据流的风格和控制流的风格不同点在于：数据流风格同时计算了x-y和y-x；然后根据x和y的大小关系，选择是否更改其中%rax所存储的值
 
@@ -739,17 +739,17 @@ done:
 
 至于基于条件数据传输的代码为什么是优于基于条件控制传输的代码的原因，必须理解现代处理器的工作原理——使用**流水**来实现高性能。对于流水遇到条件分支时采用分支预测技术。当分支预测成功时，会提高性能；但是当分支预测失败时，性能会严重降低。而如果使用条件传送编译，那么无论测试的数据是什么，所需的时间都约是8个时钟周期
 
-![](image/image_znpsI6s_fE.png)
+![](image/image_c6kd3rTf2D.png)
 
 $$
 T=p\times T_{ok}+(1-p)\times (T_{ok}+T_{MP})=T_{ok}+(1-p)\times T_{MP}
 $$
 
-![](image/image_pM_puQtvej.png)
+![](image/image_oTxYR23Hgi.png)
 
 ### 条件传送指令cmov类
 
-![](image/image_a0ldv17tp4.png)
+![](image/image_-LVP2ZJed5.png)
 
 每个条件传送指令都有两个操作数：S和R。其中S可以是寄存器或者存储器，R只能是寄存器
 
@@ -783,7 +783,7 @@ $$
 
 不是所有的都可以转换为条件传送的形式。比如，前面求值的表达式出现错误条件或者非法引用的情况，从而导致非法行为。
 
-![](image/image_3j3B8M6mr4.png)
+![](image/image_mFGHTm-8RK.png)
 
 如上图，当rdi为空时，在第2行已出现对空的解引用，是非法行为
 
@@ -907,11 +907,11 @@ switch语句可以根据一个整数索引值进行多重分支。同时可以�
 
 和使用一组很长的if-else语句相比，使用跳转表的优点是执行开关语句的时间与开关情况的数量无关[^注释15]。GCC根据开关情况的数量和开关情况值的稀疏程度来翻译开关语句。当开关情况数量比较多（例如4个以上），并且值的范围跨度比较小时，就会使用跳转表[^注释16]。
 
-![](image/image_yuQmTMJ6La.png)
+![](image/image_geZI7YeSYQ.png)
 
 下图为switch的C语言示例，以及其对应的汇编程序(-0g优化)
 
-![](image/image_T1s9YuKDdM.png)
+![](image/image__xWjSsrWfz.png)
 
 可以看到，无论有多少个分支。都是根据`goto *jt[index]`来直接跳转。而不需要经过多次分支。因此“使用跳转表的优点是执行开关语句的时间与开关情况的数量无关[^注释15]。”
 
@@ -919,7 +919,7 @@ switch语句可以根据一个整数索引值进行多重分支。同时可以�
 
 > 习题
 >
-> ![](image/image_lPlKIQTbd1.png)
+> ![](image/image_7olx5UkaZL.png)
 >
 > +1以后在0\~8，那么减1就在-1\~7
 >
@@ -959,7 +959,7 @@ P 必须能够向 Q 提供一个或多个参数，并且 Q 必须能够将一个
 
 下图即为过程P调用过程Q时，为过程P和过程Q分配的栈帧
 
-![](image/image_2q9X90jwDI.png)
+![](image/image_SETy6L4opK.png)
 
 最新过程的栈帧总是位于栈顶
 
@@ -979,7 +979,7 @@ P 必须能够向 Q 提供一个或多个参数，并且 Q 必须能够将一个
 
 call指令和ret指令的通用形式如下：
 
-![](image/image_Ah5MoB1yYm.png)
+![](image/image_T6O3ZO9jDz.png)
 
 > ✨call指令会将Label所表示的PC相对寻址以及操作数表示的值送PC，并保存PC+8入栈；
 > ret指令会弹出call所保存的PC+8，并将该值送PC
@@ -992,14 +992,14 @@ call指令和ret指令的通用形式如下：
 
     但是在x86-64中最多只能有6个整数/指针参数（数据大小可以是64、32、16、8位）可以通过寄存器传递，且这6个寄存器的使用须遵循一个特定的顺序，如下图所示：
 
-    ![](image/image_nkx61XqLVD.png)
+    ![](image/image_5Pf9reMXgk.png)
 2.  当传递的参数大于6个时，多余的参数必须使用栈来传递
 
     假设过程P调用过程Q并且需要传递n个参数(n>6)，那么P过程必须在它的栈帧上分配一个足够容纳参数7\~n的空间（参数构建区域），且参数7位于栈顶。因为所有参数的大小是以8B对齐的，所以可以计算栈帧中存储参数的大小为$(n-7+1)\times8 B$
 
 ## 3.7.4 *Local Storage on the Stack*
 
-之前所有的函数实例并没有要求任何超出寄存器外的本地存储内存。但是，在下面这些情况发生时局部变量必须存储在内存中即[🖼️ 图片](image/image_wsWvVjURXe.png "🖼️ 图片")中的“Local Variables”：
+之前所有的函数实例并没有要求任何超出寄存器外的本地存储内存。但是，在下面这些情况发生时局部变量必须存储在内存中即[🖼️ 图片](image/image_q53XUmAoRa.png "🖼️ 图片")中的“Local Variables”：
 
 1.  没有足够的寄存器来保存全部的局部变量
 2.  要使用地址远算符“&”的局部变量
@@ -1015,7 +1015,7 @@ call指令和ret指令的通用形式如下：
 
     按照约定，寄存器` %rbx`、`%rbp` 和 `%r12~%r15` 被分类为被调用者保存的寄存器
 
-    被调用者对于这些寄存器，要么根本不更改寄存器值；要么将原始值压入堆栈，更改它，然后在返回之前从堆栈中弹出旧值来保留寄存器值——会在栈帧中创建“Saved Registers”区域[🖼️ 图片](image/image_3bB4gRHu_W.png "🖼️ 图片")
+    被调用者对于这些寄存器，要么根本不更改寄存器值；要么将原始值压入堆栈，更改它，然后在返回之前从堆栈中弹出旧值来保留寄存器值——会在栈帧中创建“Saved Registers”区域[🖼️ 图片](image/image_d_meHQdqL8.png "🖼️ 图片")
     > *With this convention, the code for P can safely store a value in a callee-saved register (**after saving the previous value on the stack, of course*[^注释17]*), call Q, and then use the value in the register without risk of it having been corrupted.*
 2.  调用者保护的寄存器
 
@@ -1027,7 +1027,7 @@ call指令和ret指令的通用形式如下：
 
 使用“被调用者保存的”的寄存器保存递归控制信息
 
-![](image/image_Q6ZrgtdGRi.png)
+![](image/image_iJ4lLgswYc.png)
 
 # 3.8 *Array Allocation and Access*
 
@@ -1062,7 +1062,7 @@ C 允许对指针进行算术，其中计算值根据指针引用的数据类型
 
 假设数组E，和整数索引i分别存储在%rdx、%rcx中；结果存放在%eax(data)和%rax(pointer)，可以得到：
 
-![](image/image_9YYgIw968g.png)
+![](image/image_pwq4IHAmFv.png)
 
 从最后一个例子中可以得到：指向同一个数据对象的两个指针作差，其值是两个指针指向的地址差值除以数据类型大小
 
@@ -1076,7 +1076,7 @@ A定义了5个长度为3的数组，总大小为15\*4=60B
 
 声明的A也被视为5行3列的二维数组，从A\[0]\[0]\~A\[4]\[2]
 
-![](image/image_hrfW7xt5KL.png)
+![](image/image_qDqtBsskAf.png)
 
 嵌套数组的数组元素在内存中是按行主序存储的，即所有0行的元素可以写作A\[0]，之后是所有1行元素A\[1]，如左图所示
 
@@ -1095,11 +1095,11 @@ A定义了5个长度为3的数组，总大小为15\*4=60B
     ```
 2.  优化等级为-01时的优化
 
-    ![](image/image_rAM1LP3Y3Y.png)
+    ![](image/image_0MELanJ0mO.png)
 
     去掉了间接索引j，使用指针运算判断是否到了边界
 
-    ![](image/image_O0HHs1SNhu.png)
+    ![](image/image_vbths3fhaW.png)
 
 ## 3.8.5 *Variable-Size Arrays*
 
@@ -1107,11 +1107,11 @@ A定义了5个长度为3的数组，总大小为15\*4=60B
 
 GCC仍采用类似于定长数组计算索引的方法进行计算，唯一不同的是由于存在变长n，需要使用乘法来进行计算[^注释19]，而不能使用leaq指令（leaq的乘法，需保证1，2，4，8）
 
-![](image/image_IG4TJ5BI2n.png)
+![](image/image_VIWHfpoPnG.png)
 
 GCC通常使用访问模式的规律性来优化索引的计算
 
-![](image/image_X-estU8zXx.png)
+![](image/image_pl92wDpN09.png)
 
 # 3.9 *Heterogeneous Data Structures*
 
@@ -1134,7 +1134,7 @@ struct rec{
 
 其占据的内存空间大小为24B，如下图：
 
-![](image/image_fg5qFb2mbI.png)
+![](image/image_YE6RseV6ev.png)
 
 访问结构体的成员既可以通过“`.`”点运算符，也可以通过指针→
 
@@ -1222,7 +1222,7 @@ union U3{
 > ✨无论数据是否对齐，x86-64硬件都能正确工作。不过，Intel还是建议要对齐数据以
 > 提高内存系统的性能。对齐原则是任何K字节的基本对象的地址必须是K的倍数
 >
-> ![](image/image_8Mza2eioT0.png)
+> ![](image/image_mrw3UiEfLh.png)
 >
 > 且对于结构和联合，因为可能会存在结构数组、联合数组这种连续分配内存地址的情况，此时也需要对整个结构、联合进行对齐，以保证内部的对象的字节是对齐的，一般来说，**结构整体对齐要看第一个元素是什么；联合是4B对齐**
 
@@ -1230,7 +1230,7 @@ union U3{
 
 > 例题：
 >
-> ![](image/image_vpwFulw1uf.png)
+> ![](image/image_5W79q4NWAw.png)
 >
 > 1.  i:0\~3,c:4,j:8\~11,char:12  下一个是int 4 16
 > 2.  i:0\~3.c:4,d:5,j:8\~15  下一个是int 4 16
@@ -1240,7 +1240,7 @@ union U3{
 
 > 结构内元素整合排列
 >
-> ![](image/image_IewPa24H_u.png)
+> ![](image/image_Q4mDY6ZvFC.png)
 >
 > 当所有对象的大小是2的幂时，一种行之有效的方法是降序排
 
@@ -1248,7 +1248,7 @@ union U3{
 >
 > 因为set类指令最小的操作单元是字——16位，因此必须满足16偏移量对齐
 >
-> ![](image/image_busta9GZY5.png)
+> ![](image/image_CbGlRDE27K.png)
 
 # 3.10 *Combining Control and Data in Machine-Level Programs*
 
@@ -1306,15 +1306,15 @@ union U3{
 
 一种特别常见的状态破坏称为“缓冲区溢出”，通常在栈中的局部变量区域会分配某个字符数组来保存一个字符串，但是当字符串的长度超出了分配的数组的空间则会向上修改受保护的寄存器区域和调用者进程的返回地址区域，造成很严重的错误
 
-![](image/image_VhpjPFQd1F.png)
+![](image/image_m7utp3M7Q5.png)
 
 如上函数以及其汇编代码实现，调用后在堆栈中腾出24B用来存储字符串。但函数只分配了8个，其对应的堆栈使用情况如下所示：
 
-![](image/image_sHdBPaP9o8.png)
+![](image/image_Tw-kyPnYF-.png)
 
 则当输入字符到达一定范围时的破坏情况如下：
 
-![](image/image_-_zYRKuOYu.png)
+![](image/image_XC9vjROUje.png)
 
 缓冲区溢出的一个更有害的用途是让程序执行原本不愿意执行的功能。这是通过计算机网络攻击系统安全的最常见方法之一。通常，程序会收到一个字符串，其中包含一些可执行代码（称为漏洞利用代码）的字节编码，以及一些用指向漏洞利用代码的指针覆盖返回地址的额外字节。执行ret指令的作用就是跳转到漏洞利用代码。有两种攻击形式：
 
@@ -1343,7 +1343,7 @@ union U3{
 
 **一种方法是“****空操作雪橇nop sled****”，即在攻击代码中插入一长串nop指令，只要攻击者能够猜中这段nop指令序列中的某个nop的地址，则程序就会经过这个序列到达攻击代码**
 
-![](image/image_zncka6qmiV.png)
+![](image/image_Itou1BRvvx.png)
 
 采用“nop sled”方法，若nop sled有256个字节，则破解$n=2^{23}$的随机化，需要枚举$2^{23-8}=2^{15}$次
 
@@ -1357,7 +1357,7 @@ GCC中加入了“**栈保护机制**”。其思想是：在栈帧中任何局�
 
 > 采用堆栈损坏检测机制的例题
 >
-> ![](image/image_dSHh2ExXn2.png)
+> ![](image/image_NBI1KUTGO1.png)
 >
 > 1.  buf在栈顶偏差0，v在栈顶偏差24；buf在栈的偏差16，v在偏差8，金丝雀在40
 > 2.  v比buf更靠近栈顶，即使buf溢出也不会修改v
@@ -1389,7 +1389,7 @@ GCC中加入了“**栈保护机制**”。其思想是：在栈帧中任何局�
 
 > 说明
 >
-> ![](image/image_EBZiXIMyfp.png)
+> ![](image/image_iB3TrTwp8Q.png)
 >
 > 2行代码保存%rbp
 >
@@ -1403,7 +1403,7 @@ GCC中加入了“**栈保护机制**”。其思想是：在栈帧中任何局�
 >
 > 8\~9行代码设置将%rsp处的地址修正为**向上舍入**最接近8的倍数**e2**，然后从这个倍数+8n即为数组的起始地址**e1**
 >
-> ![](image/image_XTVsNKmtT0.png)
+> ![](image/image_ptZNaxzBqK.png)
 >
 > **leave指令可以恢复%rsp，并弹出%rbp**
 >
@@ -1416,7 +1416,7 @@ GCC中加入了“**栈保护机制**”。其思想是：在栈帧中任何局�
 >
 > +7再算术右移3位得到向上舍入最接近8倍数的数
 >
-> ![](image/image_RtXj1OIDbc.png)
+> ![](image/image_GCh9SEqrba.png)
 
 # 3.11\* Floating-Point Code\*
 
@@ -1429,7 +1429,7 @@ GCC中加入了“**栈保护机制**”。其思想是：在栈帧中任何局�
 
 本节的介绍是基于AVX2[^注释22]的，当gcc编译使用`-mavx2`参数时将生成AVX2代码
 
-![](image/image_PhvUauGwVv.png)
+![](image/image_giXgBz1ZQP.png)
 
 如左图所示，AVX2支持16个YMM寄存器，命名为`%ymm0~%ymm15`。每一个ymm寄存器都是256位的。当对标量数据进行操作时，这些寄存器仅保存浮点数据，并且仅使用低位 32 位（对于浮点型）或 64 位（对于双精度型）。汇编代码用寄存器的SSE XMM寄存器`%xmm0~%xmm15`来引用它们，每个XMM寄存器都是对应的YMM寄存器的低128位(16字节)——%xmm0存储函数返回的浮点数
 
@@ -1437,19 +1437,19 @@ GCC中加入了“**栈保护机制**”。其思想是：在栈帧中任何局�
 
 ### 浮点数传送指令
 
-![](image/image_BAXo_IWRh8.png)
+![](image/image_AgQ1CcFbc9.png)
 
 上图的指令实现的是“内存和xmm寄存器之间”以及“从一个xmm寄存器到另一个不做任何转换的传送”的浮点数指令
 
 ### 浮点数转整数指令
 
-![](image/image_jyBspj_1S0.png)
+![](image/image_YGQcxKATz0.png)
 
 将浮点数转为整数时，会发生截断，**把值向0舍入**
 
 ### 整数转浮点数指令
 
-![](image/image_glcoj93cg8.png)
+![](image/image_ZxEWkKQC1T.png)
 
 这类指令是3操作数格式，第一个操作数指明要转换的整数源，第二个操作数一般可以忽略，因为它的值只影响结果的高位字节，而xmm的高64位并不用在意。因此在最常见的使用场景中，**第二个源操作数和目的操作数是一样的**
 
@@ -1476,7 +1476,7 @@ GCC中加入了“**栈保护机制**”。其思想是：在栈帧中任何局�
 
 ## 3.11.2 *Floating-Point Code in Procedures*
 
-对于 x86-64，XMM 寄存器用于将浮点参数传递给函数并从函数返回浮点值。如Figure3.45[🖼️ 图片](image/image_x0EQ5ZBW5G.png "🖼️ 图片") 所示，遵循以下约定：
+对于 x86-64，XMM 寄存器用于将浮点参数传递给函数并从函数返回浮点值。如Figure3.45[🖼️ 图片](image/image_b3WtDT5uON.png "🖼️ 图片") 所示，遵循以下约定：
 
 1.  函数最多可以使用XMM寄存器%xmm0\~%xmm7来传递8个参数，使用顺序即从0\~7；多余8个的参数可以使用stack传递
 2.  函数返回值是被存储在%xmm0中
@@ -1484,11 +1484,11 @@ GCC中加入了“**栈保护机制**”。其思想是：在栈帧中任何局�
 
 当函数包含指针、整数和浮点参数的组合时，指针和整数将在通用寄存器中传递，而浮点值将在 XMM 寄存器中传递。这意味着参数到寄存器的映射取决于它们的类型和顺序
 
-![](image/image_pC0eyrrxNc.png)
+![](image/image_zgPXSLgaJ7.png)
 
 ## 3.11.3 *Floating-Point Arithmetic Operations*
 
-![](image/image_VtCjyoDSLm.png)
+![](image/image_XzofxXyAu8.png)
 
 上图描述了一组执行浮点运算的AVX2浮点指令
 
@@ -1496,11 +1496,11 @@ GCC中加入了“**栈保护机制**”。其思想是：在栈帧中任何局�
 
 考虑下面的浮点函数
 
-![](image/image_Vp6R_QxVPR.png)
+![](image/image_cOsnmRsmrD.png)
 
 它对应的汇编代码是：先转x为double然后计算乘法，再转i为double计算除法，最后作差
 
-![](image/image_tz11kktK7i.png)
+![](image/image_OpPuswqO51.png)
 
 ## 3.11.4 *Defining and Using Floating-Point Constants*
 
@@ -1508,23 +1508,23 @@ GCC中加入了“**栈保护机制**”。其思想是：在栈帧中任何局�
 >
 > 存储时要存储double型的常量，使用IEEE754的表示标准存储二进制，然后按照大小端的原则，决定先存储低位还是先存储高位
 
-![](image/image_vQ8obMFFd5.png)
+![](image/image_J-yH9I4UYS.png)
 
 ## 3.11.5 *Using Bitwise Operations in Floating-Point Code*
 
-![](image/image_IDRAeHnd_T.png)
+![](image/image_pD13ca5C2H.png)
 
 左图是浮点数据的异或和与运算指令
 
 这些指令的操作数是整个寄存器
 
-![](image/image_YldBRwzovz.png)
+![](image/image_8UCrCuslOt.png)
 
 ## 3.11.6 *Floating-Point Comparison Operations*
 
 AVX2提供了两条用于比较浮点数值的指令，参数S2必须是xmm寄存器数，而S1可以是xmm寄存器数也可以是内存操作数
 
-![](image/image_Piz4KxH61P.png)
+![](image/image_jNWVdGjE5I.png)
 
 浮点比较指令会设置三个条件码：零标志ZF、进位标志位CF和奇偶标志位PF
 
@@ -1536,11 +1536,11 @@ PF位对于整数和浮点数的计算中的表示意义不同
 
 对条件码的设置值如下：
 
-![](image/image_jhFc74wD5X.png)
+![](image/image_9PVyCns4cC.png)
 
 下面是一个示例——比较0.0和x
 
-![](image/image_g9RRHz9y6u.png)
+![](image/image_n6BffQgvZb.png)
 
 [^注释1]: 虚拟机、进程(ISA+虚拟内存)、虚拟内存、文件
 

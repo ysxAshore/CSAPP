@@ -107,7 +107,7 @@ hello程序以程序员编写的源文件[^注释1]的形式诞生
 
 在Unix系统中，从源文件到可执行文件的转换是通过编译器驱动程序实现的
 
-![](image/image_B1P8k6nCXi.png)
+![](image/image_rrHye9YYac.png)
 
 比如可以使用gcc工具来对C语言程序编译链接`gcc -o hello hello.c`，该命令将hello.c源文件编译成hello程序。如上图Figure 1.3所示，该转换过程分为4段：**预处理、编译、汇编、链接**[^注释6]
 
@@ -133,13 +133,13 @@ hello程序以程序员编写的源文件[^注释1]的形式诞生
 
 要运行已经转换好的hello可执行文件，需要使用shell脚本程序
 
-![](image/image_aCn86GUYpU.png)
+![](image/image_KXcNQWKTa5.png)
 
 shell 是一个命令行解释器，它会打印提示符，等待用户键入命令行，然后执行命令。如果键入命令行的第一个单词并不是对应于内置的shell命令，那么shell程序会假设该单词是一个可执行文件的名称，然后加载该可执行文件到主存并运行
 
 ## 1.4.1 Hardware Organization of a System
 
-![](image/image_woaaMZNdB-.png)
+![](image/image_4_jhtk1yct.png)
 
 为了理解当运行hello程序时发生了什么，我们需要了解典型系统的硬件组成，如上图Figure 1.4所示
 
@@ -171,7 +171,7 @@ I/O设备是系统和外部世界联系的桥梁
 
 1.  CPU执行shell程序，等待用户键入shell命令
 
-    ![](image/image_efd6YaWGrn.png)
+    ![](image/image_vSaS9fkemc.png)
 
     键盘输入的"hello"会一个一个字符读入USB 控制器，然后经过I/O总线传至CPU内的寄存器再传至主存（load-store架构），寄存器中的字符数据也会输出到Display I/O设备进行显示
     ```mermaid
@@ -184,10 +184,10 @@ I/O设备是系统和外部世界联系的桥梁
     ```
 2.  按动回车后，shell程序识别到键入完成且键入的第一个word并不是内置的shell命令，因此CPU控制从Disk中读取hello程序至主存(DMA直接传递)
 
-    ![](image/image_ZCBj3zmiAt.png)
+    ![](image/image_JckV0bwAyT.png)
 3.  加载至主存完成后，CPU内的PC指向程序入口地址开始执行hello程序，将主存上的"hello,world\n"加载至寄存器并输出至Display上
 
-    ![](image/image_rEk8aoH6nu.png)
+    ![](image/image_uZVroHTIYu.png)
 
 # 1.5 *Caches Matter*
 
@@ -197,7 +197,7 @@ I/O设备是系统和外部世界联系的桥梁
 
 # 1.6 *Storage Devices Form a Hierarchy*
 
-![](image/image_vPwIcB1iTT.png)
+![](image/image_3JStjKAzXQ.png)
 
 存储层次结构的主要思想是，**某级别的存储充当其下一个较低级别的存储的缓存。**
 
@@ -207,13 +207,13 @@ I/O设备是系统和外部世界联系的桥梁
 
 > ✨可以将操作系统当作软硬件之间的交界面，如下图Figure1.10。应用依赖于操作系统提供的各种服务来使用硬件，应用程序操作硬件的所有尝试也都需要经过操作系统
 >
-> ![](image/image_oReUhgsy3Q.png)
+> ![](image/image_heapRpDJ2p.png)
 
 操作系统有两个主要目的：(1) 保护硬件免遭失控应用程序的误用；(2) 为应用程序提供简单且统一的机制来操作复杂且通常差异很大的低级硬件设备
 
 操作系统实现这两个主要目的都是通过三个基本的抽象：进程、文件、虚拟存储 ,如下图
 
-![](image/image_u35O0Uo_EZ.png)
+![](image/image_8t0KCtohPt.png)
 
 进程→"CPU+主存+I/O"，虚拟存储→"主存+I/O"，文件→"I/O"&#x20;
 
@@ -234,7 +234,7 @@ I/O设备是系统和外部世界联系的桥梁
 
 以hello程序为例，下图展示了hello程序的基本思想：
 
-![](image/image_7CNaH2CNTy.png)
+![](image/image_b81y-s6ieP.png)
 
 起初shell程序拥有CPU的执行权，等待用户键入命令（每一次键入也涉及到了进程切换请求操作系统的I/O服务）；当键入完成后，shell程序通过一个系统调用，将控制权交给CPU，CPU保存shell的上下文，并将hello程序从disk加载到memory，然后加载hello的上下文，并将控制权交给hello。hello终止后，再通过系统调用操作系统恢复 shell 进程的上下文并将控制权传回给它，等待下一个命令行输入。
 
@@ -248,7 +248,7 @@ I/O设备是系统和外部世界联系的桥梁
 
 虚拟内存是一种抽象，它为每个进程提供了它独占使用主存的错觉。**每个进程都有相同的统一主存视图，称为虚拟地址空间。** Linux进程的虚拟存储空间结构如下图Figure1.13所示
 
-![](image/image_i0x4P568cC.png)
+![](image/image_13XlD8xfIe.png)
 
 虚拟存储空间的最顶层是操作系统内核代码所驻留的空间，其下面的部分空间[^注释8]是用户虚拟存储空间。从上至下用户虚拟存储空间依次是：栈、链接库、堆、程序的代码和数据
 
@@ -297,11 +297,11 @@ Amdahl's Law的主要思想是当我们加速系统的某一部分时，**对整
 
 多核：多个CPU[^注释9]集成到一个电路芯片上，有多个CPU的完整副本。
 
-![](image/image_8nSTUwzqX7.png)
+![](image/image_QN0Q9AcPAz.png)
 
 多线程：又称为同时多线程，是一项允许一个CPU执行多个控制流的技术。这种技术使得多个线程拥有CPU某些硬件的等量副本，比如PC和寄存器文件。而其他比如算术逻辑单元功能部件只有一个。
 
-![](image/image__EAlIXQ540.png)
+![](image/image_jKO94_v5Yv.png)
 
 ### 1.9.2.2 Instruction-Level Parallelism
 
@@ -321,7 +321,7 @@ Amdahl's Law的主要思想是当我们加速系统的某一部分时，**对整
 
 此外增加了虚拟机这层抽象，虚拟机是对“操作系统+处理器+主存+I/O”的抽象
 
-![](image/image_1FA9pTi-je.png)
+![](image/image_vnmz0Vwt5G.png)
 
 [^注释1]: 这个源文件可以是任何的ASCII文本文件最后只需要使用相对应高级语言的后缀名保存即可
 
