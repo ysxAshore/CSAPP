@@ -81,6 +81,15 @@
         -   [Execute Stage](#Execute-Stage)
         -   [Memory Stage](#Memory-Stage)
         -   [Pipeline Control Logic](#Pipeline-Control-Logic)
+            -   [Desired Handling for each of Special Control Cases](#Desired-Handling-for-each-of-Special-Control-Cases)
+            -   [Detecting Special Control Conditions](#Detecting-Special-Control-Conditions)
+        -   [Pipeline Control Mechanisms](#Pipeline-Control-Mechanisms)
+        -   [Combinations of Control Conditions](#Combinations-of-Control-Conditions)
+        -   [Control Logic Implementation](#Control-Logic-Implementation)
+    -   [4.5.9 Performance Analysis](#459-Performance-Analysis)
+    -   [4.5.10 Unfinished Business](#4510-Unfinished-Business)
+        -   [多周期指令](#多周期指令)
+        -   [与存储系统的接口](#与存储系统的接口)
 
 # 英语
 
@@ -102,23 +111,26 @@
 16. pending悬而未决的；待处理的；直到……为止
 17. subtle微妙的
 18. defer推迟
-19. envision设想
-20. while同时
-21. intrinsic固有的
-22. monolithic整体式的
-23. contemporary当代的
-24. acyclic无环的
-25. exclusive专有的
-26. periodic周期性的
-27. diagramm图解
-28. idiosyncrasy特质
-29. spray喷涂
-30. reciprocal倒数、互惠的
-31. appreciate欣赏、感激、了解
-32. justify证明
-33. concern oneself with关注
-34. hold back控制
-35. glimpse瞥
+19. penalty乘法
+20. envision设想
+21. while同时
+22. intrinsic固有的
+23. monolithic整体式的
+24. contemporary当代的
+25. acyclic无环的
+26. exclusive专有的
+27. periodic周期性的
+28. diagramm图解
+29. idiosyncrasy特质
+30. spray喷涂
+31. reciprocal倒数、互惠的
+32. appreciate欣赏、感激、了解
+33. justify证明
+34. concern oneself with关注
+35. hold back控制
+36. glimpse瞥
+37. mutually相互
+38. fall short of the goal of达不到……目标
 
 > \*The instructions supported by a particular processor and their byte-level encodings are known as its \*\*instruction set architecture \**(ISA)*
 >
@@ -138,7 +150,7 @@
 
 ## 4.1.1 *Programmer-Visible State*
 
-![](image/image_gRh1YPkJe7.png)
+![](image/image_0nRl5pH8NG.png)
 
 Y86-64中的每条指令都可以读或者修改处理器的一些状态，这些状态称为“程序员[^注释1]可见状态”
 
@@ -156,7 +168,7 @@ Stat状态码表示程序执行的整体状态，可以表示当前程序是在�
 
 ## 4.1.2 *Y86-64 Instructions*
 
-![](image/image_HCJFkk2Flk.png)
+![](image/image_hbiqxGOhNP.png)
 
 Y86-64所支持的指令集如上图所示，指令所操作的对象是8字节整数
 
@@ -196,7 +208,7 @@ Y86-64所支持的指令集如上图所示，指令所操作的对象是8字节�
 
 ## 4.1.3 *Instruction Encoding*
 
-[🖼️ 图片](image/image_6az_cYfAOS.png "🖼️ 图片")Figure4.2也展示出了Y86-64指令集的位级编码：
+[🖼️ 图片](image/image_Fk_7K5nsTC.png "🖼️ 图片")Figure4.2也展示出了Y86-64指令集的位级编码：
 
 1.  指令编码长度范围在1字节到10字节之间
 2.  每条指令都以1字节的指令指示符开始，可能会有1字节的寄存器指示符、8字节的常量
@@ -210,13 +222,13 @@ Y86-64所支持的指令集如上图所示，指令所操作的对象是8字节�
 
 功能字段仅用于区分一组共享代码字段的指令集合的某个指令，如下
 
-![](image/image_JQiBDm1iva.png)
+![](image/image_r8TVEV9QPu.png)
 
 值得注意的是rrmovq与cmovXX具有同样的格式，可以被视为jmp类的cmov，它的功能字段值恰好为0
 
 ### *Register specifier*
 
-![](image/image_bB0-okDZEg.png)
+![](image/image_aFpwq6i8Qs.png)
 
 寄存器指示符的编码是从0x0\~0xE。Y86-64和X86-64寄存器编号是匹配的(0xF为%r15)
 
@@ -236,7 +248,7 @@ Y86-64所支持的指令集如上图所示，指令所操作的对象是8字节�
 
 ### RISC and CISC
 
-![](image/image_zNwGu4jJdX.png)
+![](image/image_AggxvIWsto.png)
 
 而Y86-64指令集既有CISC指令集的属性也有RISC指令集的属性。和CISC一样，它有条件码，长度可变的指令，并用栈来保存返回地址。和RISC一样的是，采用load-store机制和规则编码，通过寄存器来传参——Y86-64可以看作是采用了CISC x86-64指令集，但利用RISC的一些规则进行了简化
 
@@ -244,9 +256,9 @@ RISC和CISC的发展趋势是相结合的，而且各在不同的市场上表现
 
 ## 4.1.4 *Y86-64 Exception*
 
-在4.1.1[🖼️ 图片](image/image_zz8V6m3WHW.png "🖼️ 图片")中讲到，程序员的可见状态中包含一个Stat状态码位，其值如下：
+在4.1.1[🖼️ 图片](image/image_4SkZmBQ-pU.png "🖼️ 图片")中讲到，程序员的可见状态中包含一个Stat状态码位，其值如下：
 
-![](image/image_m4VLwcF-RG.png)
+![](image/image_k0BhdwQC6k.png)
 
 值为1时，表示AOK，即表示程序正常执行
 
@@ -262,15 +274,15 @@ RISC和CISC的发展趋势是相结合的，而且各在不同的市场上表现
 
 对于下列C函数，观察它的x86-64汇编代码和Y86-64汇编代码：
 
-![](image/image_vGcNuUW51F.png)
+![](image/image_Ea1Ri3E1Dv.png)
 
-![](image/image_LEpcs8z8ed.png)
+![](image/image_PeeyG6beE0.png)
 
 可以看到以下几点不同：
 
 1.  Y86-64是load-store架构，所有的算术运算均是寄存器和寄存器之间的，不存在寄存器和立即数运算，因此需要2-3行的汇编代码`irmovq`；也不存在存储器操作数和寄存器之间的运算，因此需要第8行的`mrmovq`
 
-![](image/image_idkOPuTQNt.png)
+![](image/image_J1hOw87Rev.png)
 
 其中"`.`"开头的是汇编器伪指令，告诉汇编器调整生成代码的地址或插入一些数据字
 
@@ -280,7 +292,7 @@ RISC和CISC的发展趋势是相结合的，而且各在不同的市场上表现
 
 在实验的过程中会用到yas和yis
 
-![](image/image_osbpCx-FIF.png)
+![](image/image_IC1Ope1olB.png)
 
 ## 4.1.5\* Some Y86-64 Instruction Details\*
 
@@ -288,12 +300,12 @@ RISC和CISC的发展趋势是相结合的，而且各在不同的市场上表现
 
 1.  pushq %rsp是存放原来的%rsp还是减8之后的%rsp
 
-    ![](image/image_YJgCdywl5j.png)
+    ![](image/image__UGLrrMCT5.png)
 
     总返回0说明，**push %rsp保存的是原来的%rsp即未减8的**
 2.  popq %rsp是恢复栈中的值还是原来的%rsp+8
 
-    ![](image/image_a-pv_4CeMl.png)
+    ![](image/image_18m-ElW_S9.png)
 
     返回的总是0xabcd，表明**popq %rsp得到的是栈中的值**
 
@@ -305,7 +317,7 @@ HCL硬件控制语言是用来描述硬件设计的控制部分，只表示有�
 
 ## 4.2.1 Logic Gates
 
-![](image/image_KQ1xiYXzDl.png)
+![](image/image__NqY0zAtDd.png)
 
 逻辑门是数字电路的基本计算元件，逻辑门的输出是其输入位值的布尔函数，如与AND、或OR、非NOT。上图即为逻辑门部件的示意图以及HCL描述。
 
@@ -327,7 +339,7 @@ HCL硬件控制语言是用来描述硬件设计的控制部分，只表示有�
 
 下图的逻辑电路可以判断两个位是否相等，其对应的HCL为
 
-![](image/image_GDC7Roexaa.png)
+![](image/image_-X_uX1_N-P.png)
 
 ```c
 bool eq=(a&&b)||(!a&&!b)
@@ -337,7 +349,7 @@ bool eq=(a&&b)||(!a&&!b)
 
 下图的逻辑电路可以实现一位多选器，其对应的HCL为
 
-![](image/image_qTvxz9w5cd.png)
+![](image/image_V0H6IIEqTQ.png)
 
 ```c
 bool out=(!s&&b)||(s&&a);
@@ -360,7 +372,7 @@ HCL表达式和C表达式有着很明显的相似之处
 
 > *Combinational circuits that perform word-level computations are constructed using logic gates to compute the individual bits of the output word, based on the individual bits of the input words.*
 
-![](image/image_I8JqBzNF1n.png)
+![](image/image_E18F0t6sWW.png)
 
 Figure4.12展示了一个用于判断两个64位字A、B是否相等的组合逻辑电路
 
@@ -376,7 +388,7 @@ bool Eq=(A==B);
 >
 > 在功能齐全的HDL中，每个字都可以声明为具有特定的位数
 
-![](image/image_buxAi7gCVV.png)
+![](image/image_DJd5Tw1LHI.png)
 
 Figure4.13展示了字级的多路选择器，同字级的比较器一样，是对字的每一位运行一位多路选择器，然后最后输出等同字大小的数据
 
@@ -391,7 +403,7 @@ int Out=[
 
 > ✨多路选择器的HCL描述使用case表达式，其通用的格式为：
 >
-> ![](image/image_n4O6CEtKAz.png)
+> ![](image/image_ocoOMR2iu1.png)
 >
 > 表达式包含着一系列的case语句，每一个case i包含着一个布尔表达式$select_i$和其对应的值$expr_i$
 >
@@ -412,7 +424,7 @@ int Out=[
 >
 > 比如三路最小的HCL为
 >
-> ![](image/image_bxEO6O7fFK.png)
+> ![](image/image_BWAVOhVdxM.png)
 
 ## 4.2.4 *Set Membership*
 
@@ -420,7 +432,7 @@ int Out=[
 
 例如，生成四路选择器的选择信号s1、s0：
 
-![](image/image_T1XY3UtOKr.png)
+![](image/image_xlx91J3xmt.png)
 
 ```c
 bool s1 = code == 2 || code == 3;
@@ -459,7 +471,7 @@ bool s0 = code in { 1, 3 };
 
 ### 硬件寄存器
 
-![](image/image_4Q6vsj7UFo.png)
+![](image/image_8nO-WC4zCQ.png)
 
 Figure4.16详细介绍了硬件寄存器以及它是怎么进行工作的
 
@@ -474,7 +486,7 @@ Y86-64处理器使用硬件寄存器去实现PC、CC、Stat
 
 下面的图展示了一个典型的寄存器文件：
 
-![](image/image_DNscRA8V6C.png)
+![](image/image_yehYlLSqtX.png)
 
 该寄存器堆有两个读端口，名为 A 和 B，以及一个写端口，名为 W。这种多端口随机存取存储器允许同时进行多个读和写操作。
 
@@ -488,7 +500,7 @@ Y86-64处理器使用硬件寄存器去实现PC、CC、Stat
 
 为了存储程序数据，处理器内部存在一个随机访问的存储器，其电路结构如下：
 
-![](image/image_qIiAIDCM-E.png)
+![](image/image_nL-d10gGYH.png)
 
 读：给定内存单元地址至address引脚，并设置write引脚为低电平，那么在几个延迟后，该存储单元的数据就会加载至data\_out引脚
 
@@ -935,7 +947,7 @@ rrmovq rA,rB是cmovq的无条件版本，可以修改rrmovq的通用格式如下
 
 其对应的SEQ抽象视图如下：
 
-![](image/image_5GydgrJDKB.png)
+![](image/image_lcNtW7aTfd.png)
 
 ### 硬件图的画图惯例
 
@@ -943,7 +955,7 @@ rrmovq rA,rB是cmovq的无条件版本，可以修改rrmovq的通用格式如下
 
     自下而上的画法是为了指令从下到上流动
 
-    [🖼️ 图片](image/image_pprGtKLoIB.png "🖼️ 图片")的第五周期的扩展图即符合这种自下而上的画法：取指在最底部，写回在顶部
+    [🖼️ 图片](image/image_vBjlSNM_F2.png "🖼️ 图片")的第五周期的扩展图即符合这种自下而上的画法：取指在最底部，写回在顶部
 
     且由于正常的程序流程是从指令序列的顶部到底部，因此我们通过让流水线从底部到顶部来保留这种顺序
 2.  硬件寄存器用白色方框表示——SEQ中唯一的硬件寄存器为PC
@@ -958,7 +970,7 @@ rrmovq rA,rB是cmovq的无条件版本，可以修改rrmovq的通用格式如下
 
 ### SEQ详细硬件图
 
-![](image/image_fY2RPtl_NR.png)
+![](image/image_b9UsDkjgiD.png)
 
 ## 4.3.3 SEQ Timing
 
@@ -980,7 +992,7 @@ SEQ的实现包括组合逻辑和两种存储器设备（如PC、CC这样的时�
 
 ### 取指阶段
 
-![](image/image_DWnH1YjrX3.png)
+![](image/image_Hz55Ls0u23.png)
 
 如上图所示，取指阶段包括指令存储器、分割以及对齐和PC增量器这三种组合逻辑组件、以及时钟寄存器PC寄存器和一些控制逻辑
 
@@ -1022,7 +1034,7 @@ $$
 
 ### 译码、写回阶段
 
-![](image/image_44Rjj340Da.png)
+![](image/image_Mw3rcItt0S.png)
 
 译码阶段和写回阶段均需要使用寄存器文件，因此一起讨论
 
@@ -1034,7 +1046,7 @@ $$
 
 > 0xF表示不需要访问寄存器
 
-Figure4.28 [🖼️ 图片](image/image_sQIc-Q_Adk.png "🖼️ 图片")下方的4个控制逻辑块是用来根据rA、rB和icode生成4种端口的地址引脚的
+Figure4.28 [🖼️ 图片](image/image_sqBmZz67FM.png "🖼️ 图片")下方的4个控制逻辑块是用来根据rA、rB和icode生成4种端口的地址引脚的
 
 ```c++
 //4位的数据量称为word
@@ -1062,7 +1074,7 @@ word dstM={
 
 ### 执行阶段
 
-![](image/image_sLJO1mpUV8.png)
+![](image/image_lTe7q84RII.png)
 
 Figure4.19展示了执行阶段的控制逻辑。这一单元会基于alufun信号对输入的aluA和aluB做指定的运算
 
@@ -1100,7 +1112,7 @@ cond这个硬件单元是使用条件码CC和功能码ifun一起决定是否采�
 
 ### 访存阶段
 
-![](image/image_ZqKX9SlFGu.png)
+![](image/image_DcttheZ3rc.png)
 
 如Figure4.30所示，访存阶段需要完成读取程序数据以及写程序数据的任务。控制块memAddr生成访问的存储器地址，memData生成访问的存储器数据，memRead则生成读信号，memWrite生成写信号
 
@@ -1124,7 +1136,7 @@ bool memWrite = icode in {IRMMOVQ,IPUSHQ,ICALL}
 
 ### 更新PC阶段
 
-![](image/image_-nKj9Fp8mH.png)
+![](image/image_vH9UEY9-U2.png)
 
 新PC的值可以是valC、valM或者valP。其对应的HCL描述如下：
 
@@ -1155,13 +1167,13 @@ word new_pc={
 
 ## 4.4.1 *Computational Pipelines*
 
-![](image/image_1Lid_eR0mH.png)
+![](image/image_l5CTKojynZ.png)
 
 在目前的逻辑设计中，衡量电路延迟是使用ps数量级，即$10^{-12} s$
 
 则在Figure4.32的示例中，假设组合逻辑计算块的延迟是300ps、时钟寄存器的加载延迟是20ps，则整个系统的latency是320ps，throughput是3.12GIPS
 
-![](image/image_ykJgQ2sNyb.png)
+![](image/image_28HnJemIp2.png)
 
 假设如Figure4.33所示，将Figure4.32中的组合逻辑分为三个阶段A、B和C，每个阶段耗时100ps。并在阶段之间插入时钟寄存器以实现流水。这样则当该系统处于稳定时，每个时钟周期有一条指令离开系统并有一条指令进入系统。可以计算出时钟周期是120ps，latency是360ps，throughput是8.33GIPS
 
@@ -1169,7 +1181,7 @@ word new_pc={
 
 ## 4.4.2 *A Detailed Look at Pipeline Operation*
 
-![](image/image_bKXQQUrRQ_.png)
+![](image/image_iCfZwV0jmH.png)
 
 在240ps的时钟上升之前，组合逻辑的输出并没有打入到寄存器中。因此组合逻辑B和Reg1是在计算I1的，组合逻辑A是I2，组合逻辑C是不活跃的
 在240ps的时钟上升之后，之前的组合逻辑输出已经打入到了寄存器中但是还没有过20ps，仍没有传输到紧接着寄存器的组合逻辑块，因此组合逻辑A、B、C均空，Reg2是I1，Reg1是I2
@@ -1182,15 +1194,15 @@ word new_pc={
 
 在实际应用中，可能会出现如下图这样存在着划分的组合逻辑段所需要的时间是不等长的系统，该系统的latency是510ps，throughput是5.88GIPS——因为**时钟周期会设置为瓶颈段所需要的时间**
 
-![](image/image_kWKfpgFXXO.png)
+![](image/image_MnZw-J8fdN.png)
 
 其流水线时空图如下：
 
-![](image/image_aQo8jjVIj8.png)
+![](image/image_xX0UFWnwNW.png)
 
 > 例题
 >
-> ![](image/image_4AE9nowPYK.png)
+> ![](image/image_GYoaR9dtoY.png)
 >
 > A. ABC 寄存器 DEF 时钟周期是190ps
 > B. AB CD EF 时钟周期是130ps
@@ -1205,7 +1217,7 @@ word new_pc={
 
 > 例题
 >
-> ![](image/image_cZBCjLTcQ7.png)
+> ![](image/image_drF1gSHGns.png)
 >
 > A.
 >
@@ -1241,11 +1253,11 @@ word new_pc={
 
 因此**放在时钟周期开始时计算当前指令的PC需要保存上一条指令的状态结果：`icode、Cnd、valC、valM、valP`**。其SEQ、SEQ+对应的逻辑图如下：
 
-![](image/image_nmXIAAIefD.png)
+![](image/image_8IXuMmsmQF.png)
 
 下图给出了SEQ+硬件的一个更为详细的说明，除更新PC外完全一样——PC逻辑从上面（在时钟周期结束时活动）移到了下面（在时钟周期开始时活动）
 
-![](image/image_qK3YAIgHze.png)
+![](image/image_Hte1G3yVIl.png)
 
 > SEQ+中的PC：
 >
@@ -1259,7 +1271,7 @@ word new_pc={
 
 PIPE-的硬件结构如下图所示，图中的蓝色框为流水线寄存器，每个寄存器包含显示为白色框的不同字段。
 
-![](image/image_MFb0sO6Xg3.png)
+![](image/image_Xyl-CLVhzZ.png)
 
 下面介绍一下所添加的流水线寄存器，除流水线寄存器外其余的硬件单元集合是几乎和SEQ、SEQ+相同的
 
@@ -1283,7 +1295,7 @@ irmovq $4,%rdx # I4
 halt # I5
 ```
 
-![](image/image_e0JsAqOl7o.png)
+![](image/image_uf-ykL5ELc.png)
 
 ## 4.5.3 Rearranging and Relabeling Signals
 
@@ -1295,7 +1307,7 @@ halt # I5
 
 > ✨区分这两种前缀命名法
 >
-> ![](image/image_wCoRDGIvRj.png)
+> ![](image/image_mXRzVFTmXT.png)
 
 此外PIPE-和SEQ+虽然都在译码阶段生成了dstE、dstM。但是在SEQ+中dstE、dstM是直接送到寄存器文件的，因为周期内执行的指令是不变的；而PIPE-中若采取SEQ+同样的方法，则在写回阶段时，i指令的结果是写到i+3指令中的dstE、dstM。因此dstE、dstM需要通过流水线寄存器向WB阶段传递
 
@@ -1315,7 +1327,7 @@ PIPE-中还在译码阶段增加了“Select A”控制逻辑块[^注释10]，�
 
 在本次设计中，仅使用预测分支成功这种策略，即遇到分支指令时预测下一条指令地址是valC。对于ret指令，因为返回地址需要在访存后才可以得到，所采取的措施是暂停取指，等到ret指令通过写回阶段
 
-如Figure4.41[🖼️ 图片](image/image_Ap9tff_Tn-.png "🖼️ 图片")所示，可以看到取指阶段有一个“Predict PC”控制逻辑，该控制逻辑在valP和valC中二选一产生预测得到的PC，存储在F寄存器的`predPC`字段。而“Select PC”控制逻辑则在`predPC`、没有采用分支的分支跳转指令的`valP即M_valA`、ret指令到写回阶段时的`W_valM`
+如Figure4.41[🖼️ 图片](image/image_cFal17EdHE.png "🖼️ 图片")所示，可以看到取指阶段有一个“Predict PC”控制逻辑，该控制逻辑在valP和valC中二选一产生预测得到的PC，存储在F寄存器的`predPC`字段。而“Select PC”控制逻辑则在`predPC`、没有采用分支的分支跳转指令的`valP即M_valA`、ret指令到写回阶段时的`W_valM`
 
 ## 4.5.5 Pipeline Hazards
 
@@ -1344,7 +1356,7 @@ PIPE-中还在译码阶段增加了“Select A”控制逻辑块[^注释10]，�
 
 Stalling技术是允许一组指令阻塞在它们在流水线的当前阶段（`IF/ID`），然后让`EX、MEM、WB`阶段的指令正常执行。使用Stalling技术最后的时空图是和插入对应阻塞周期数的`nop指令`的时空图是一样的，如下图
 
-![](image/image_IYfOcmrBeG.png)
+![](image/image_NGp9unoEGp.png)
 
 > ✨Stalling技术比较容易实现，但是它的性能并不是很好。在许多情况下，一条指令更新寄存器，而紧随其后的指令使用同一寄存器。这将导致流水线停顿最多三个周期，从而显着降低总体吞吐量
 
@@ -1352,7 +1364,7 @@ Stalling技术是允许一组指令阻塞在它们在流水线的当前阶段（
 
 当发生数据依赖时，除了使用`Stalling`技术暂停流水以外，也可以使用`Forwarding`前递技术来将要写到某条寄存器中的结果直接送到需要该寄存器的指令的取操作数ID阶段，如下图：
 
-![](image/image_q-6QUZfY4D.png)
+![](image/image_-SsAFITf_S.png)
 
 使用前递技术可以直接将EX阶段产生的`e_valE`[^注释13]、MEM流水线寄存器中的`M_valE`、MEM阶段产生的`m_valM`和WB流水线寄存器中的`W_valE`和`W_valM`传递给E流水线寄存器的valA或valB
 
@@ -1360,13 +1372,13 @@ Stalling技术是允许一组指令阻塞在它们在流水线的当前阶段（
 
 具体使用Forward技术解决数据冒险的处理器`PIPE`[^注释14]硬件结构图如下：
 
-![](image/image_WQwAVUDrjW.png)
+![](image/image_iAYjnRwk9V.png)
 
 ### Load/Use Data Hazards
 
 但是需要注意一个特殊情况：**从内存中读出的数据是需要在MEM阶段才产生的m\_valM**。因此如果是两条紧邻的指令i和j且i是一个load指令，j指令需要用到i指令读出的结果，那么就必须使用`stalling+forward`结合的技术来最大化吞吐率，即暂停ID阶段指令j一个时钟周期，至指令i已在MEM阶段时才将m\_valM传递到valA或valB，如下图所示。相邻2、3个指令的load就并不存在这个问题
 
-![](image/image_3FjhNOfLiq.png)
+![](image/image_Jhse1xCpQj.png)
 
 这种`stalling+forward`结合的技术称为“`load interlock`”
 
@@ -1378,12 +1390,12 @@ Stalling技术是允许一组指令阻塞在它们在流水线的当前阶段（
 
 1.  ret指令
 
-    ![](image/image__dKwfftcWt.png)
+    ![](image/image_HcyRBb6EIy.png)
 
     当ID阶段检测到当前指令是一条ret指令时，即阻塞IF取指阶段。一旦ret指令到达WB阶段，即已经通过MEM段得到了返回地址，即可以通过PC选择器来从返回地址处取PC重新开始执行
 2.  预测失败的jump指令
 
-    ![](image/image_nLU3vljS_m.png)
+    ![](image/image_n9AYhR0Bfc.png)
 
     虽然是按照预测分支成功是取分支目标处的指令，但是在实际分支结果在EXE阶段得到时，只取出了两条分支目标处的指令且并未对处理器状态（CSR、MEM、REG）进行修改[^注释15]，因此只需要取消[^注释16]所取出的两条分支目标处指令，重新从分支指令之后开始取指
 
@@ -1403,7 +1415,7 @@ Stalling技术是允许一组指令阻塞在它们在流水线的当前阶段（
 
 Y86-64指令集架构只实现了3种内部异常：`halt指令`；不合法的指令[^注释17]；无效的地址[^注释18]
 
-在Y86-64中，当遇到异常时，处理器所采用的做法是暂停处理器正在执行的指令，并按照[🖼️ 图片](image/image_yV2UNc51tN.png "🖼️ 图片")设置恰当的状态码。但是在更完整的处理器设计中，当遇到异常时采取的措施是执行驻留在操作系统内核中的异常处理程序，异常处理程序完成以后再回到异常指令的下一条指令继续执行
+在Y86-64中，当遇到异常时，处理器所采用的做法是暂停处理器正在执行的指令，并按照[🖼️ 图片](image/image_dJUDcQvruB.png "🖼️ 图片")设置恰当的状态码。但是在更完整的处理器设计中，当遇到异常时采取的措施是执行驻留在操作系统内核中的异常处理程序，异常处理程序完成以后再回到异常指令的下一条指令继续执行
 
 #### Exception handling in pipelined system
 
@@ -1416,12 +1428,12 @@ Y86-64指令集架构只实现了3种内部异常：`halt指令`；不合法的�
     基本规则是：**优先处理流水线深度最深的指令引起的异常**。例如上面的例子，先处理invalid address异常
 2.  采用分支预测技术且总预测分支成功，则会有如果分支目的处指令引起异常，但是若分支预测失败，需要继续执行分支指令的下一条指令，那么分支目标地址处所执行的指令应该取消，所造成的异常也需要避免出现
 
-    ![](image/image_U-hGzMAGNh.png)
+    ![](image/image_Kx2bbSPsqe.png)
 
     target处是一个invalid instruction，但是实际上jne并不跳转，因此target处指令并不会执行，因此需要避免异常的出现
 3.  由于流水线处理器在不同阶段更新系统状态的不同部分，所以异常指令后面的指令有可能在异常指令完成之前改变部分状态
 
-    ![](image/image_Q8D9IO5j44.png)
+    ![](image/image_ZAiZ5fNhXR.png)
 
     假设不允许程序访问大于64位地址范围的高位地址部分即$2^{32}-1\dots2^{64}-1$
 
@@ -1443,7 +1455,7 @@ PIPE中的许多逻辑块的设计是等同于SEQ和SEQ+的，除了**在信号�
 
 ### PC Selection and Fetch Stage
 
-![](image/image_KNWp8hR93z.png)
+![](image/image_sApn-zLaGA.png)
 
 上图的Figure4.57展示了PIPE取指阶段的详细逻辑
 
@@ -1494,7 +1506,7 @@ word f_valC= f_instr[f_pc+1+f_need_regids:f_pc+1+f_need_regids+8];
 
 ### Decode and Write-Back Stages
 
-![](image/image_Ck7nZcyShx.png)
+![](image/image_e-IRsK-MJL.png)
 
 上图Figure4.58展示了ID和WB阶段的详细逻辑图
 
@@ -1583,7 +1595,7 @@ regfile regfile_init(
 
 ### Execute Stage
 
-![](image/image_vT832yBM76.png)
+![](image/image_M7qTBR52tc.png)
 
 上图Figure4.60展示了PIPE执行阶段的具体流程
 
@@ -1617,7 +1629,7 @@ e_dstE = [
   1:E_dstE;//irrmovq的Cnd一定为1，而ccmov的Cnd需要根据条件判断
 ];
 
-bool e_setCC= E_icode==IOPQ && m_stat == AOK && W_stat==AOK;
+bool e_setCC= E_icode==IOPQ && !m_stat in {ADR,INS,HLT} && !W_stat in {ADR,INS,HLT};
 
 //zf of sf
 e_cc_enable = [
@@ -1652,7 +1664,7 @@ alu alu_init(
 
 ### Memory Stage
 
-![](image/image_1dnz9Gyz61.png)
+![](image/image_80h4YqUg-M.png)
 
 上图Figure4.61展示了PIPE中的访存阶段
 
@@ -1673,6 +1685,247 @@ m_stat = [
 ```
 
 ### Pipeline Control Logic
+
+**流水线控制逻辑必须处理接下来****四种控制情况****，这四种情况是流水线机制（比如前递、分支预测）不能处理的**
+
+1.  Load/use hazards
+
+    当ID阶段检测到当前指令与其上一条指令存在数据依赖[^注释26]，且上一条指令是Load指令，那么流水线必须暂停一个时钟周期
+2.  Processing ret
+
+    当ID阶段检测到当前指令是ret指令，则必须阻塞流水线到ret达到WB阶段
+3.  Mispredicted branches
+
+    当分支逻辑检测到不应进行跳转时，必须取消分支目标处所取出的两条指令，并且应当从跳转指令之后的指令开始取指
+4.  Exception
+
+    当一条指令导致异常时，禁止异常指令后续的指令对程序员可见状态的更新，并在异常指令到达WB阶段后停止流水线的执行
+
+#### Desired Handling for each of Special Control Cases
+
+1.  Load/use hazards
+
+    只有mrmovq和popq指令需要从MEM中加载数据送到寄存器中
+
+    因此当ID阶段检测到d\_srcA、d\_srcB中有和E\_dstM相等的情况且E\_icode是IMRMOVQ或者IPOPQ，那么取操作数的指令就需要暂停在ID阶段，执行阶段执行bubble
+
+    暂停流水线的方法是：保持F寄存器值和D寄存器值固定，从而使得流水线阻塞
+    > *In summary, implementing this pipeline flow requires detecting the hazard condition, keeping pipeline registers F and D fixed, and injecting a bubble into the execute stage.*
+2.  Processing ret
+
+    当ID阶段检测到当前指令是ret指令时，流水线会阻塞直到ret指令已完成访存到达WB阶段
+
+    ![](image/image_56XVSWyHjU.png)
+
+    上图Figure4.62是流水线控制逻辑处理ret指令的详细过程。可以看到没有方法去在取指阶段插入bubble。而ret指令所预测得到的pred\_PC是valP，因此会在ret指令后续指令连续取指同一条指令，但是为了不执行它们，会在这些指令的ID阶段插入bubble
+3.  Mispredicted branches
+
+    当跳转指令到达执行阶段时，将检测到错误预测。然后，控制逻辑在下一个周期将bubble注入到解码和执行阶段，导致两条错误获取的指令被取消。在同一周期，流水线将正确的指令读入取指阶段
+4.  Exception
+
+    Y86-64架构中对异常指令的处理需与ISA期望的行为保持一致——异常指令之前的指令都可完成执行，但是异常指令之后的指令不能修改程序状态
+
+    但是由于Y86-64异常的修改是在取指和访存阶段，以及程序的状态在执行阶段、访存阶段和写回阶段均会更新，因此要与ISA保持一致是比较难的
+
+    和之前的描述相一致，当异常发生时，记录异常指令的信息并继续执行异常指令，将stat按照流水线传递。当异常指令到达MEM阶段时，禁止EXE阶段中的指令更改CC；向内存阶段中插人气泡，以禁止向数据内存中写入；当写回阶段中有异常指令时，暂停写回阶段，因而暂停了流水线——即Stall WB+Bubble MEM
+
+    ![](image/image_EMACIMrNij.png)
+
+#### Detecting Special Control Conditions
+
+![](image/image_W4aIdOT44F.png)
+
+上图Figure4.64总结了需要进行特殊流水线控制的情况
+
+Load/use hazard
+
+```c
+bool isload_hazard=E_code in {IMRMOVQ,IPOPQ} && (d_srcA==E_dstM||d_srcB==E_dstM);
+
+```
+
+Processign ret
+
+```c
+bool isRet=IRET in {D_icode,E_icode,M_icode};
+```
+
+Mispredicted branch
+
+```c
+bool isMisp=E_icode==IJXX&&!e_cnd;
+```
+
+Exception
+
+```c
+m_stat in {ADR,HLT,INS}||W_stat in {ADR,HLT,INS};
+```
+
+这些检测的控制块必须在时钟周期结束之前生成其结果，以便在时钟上升时控制流水线寄存器的操作以开始下一个周期
+
+### Pipeline Control Mechanisms
+
+![](image/image_0Q27JVfEHn.png)
+
+上图Figure4.65展示了实现流水线控制逻辑去抑制一个流水线寄存器中的指令或者是在流水线中插入bubble的机制
+
+**流水线寄存器有两个控制引脚stall和bubble，当时钟上升沿出现时，stall高有效时寄存器的输出保持不变；** ​**bubble高有效时寄存器输出是某种复位配置，等同于nop**[^注释27]
+
+那么可以总结四种特殊情况下的流水线寄存器是normal、stall还是bubble的情况如下——下一个时钟周期的情况
+
+| Condition           | Pipeline register |        |        |        |        |
+| ------------------- | ----------------- | ------ | ------ | ------ | ------ |
+|                     | F                 | D      | E      | M      | W      |
+| Load/use hazard     | Stall             | Stall  | Bubble | Normal | Normal |
+| Processing ret      | Stall             | Bubble | Normal | Normal | Normal |
+| Mispredicted branch | Normal            | Bubble | Bubble | Normal | Normal |
+
+> *In terms of timing, the stall and bubble control signals for the pipeline registers are generated by blocks of combinational logic. These values must be valid as the clock rises, causing each of the pipeline registers to either load, stall, or bubble as the next clock cycle begins.*
+
+### Combinations of Control Conditions
+
+到目前为止，关于特殊流水线控制条件的讨论都是假设任何一个时钟周期内至多只发生一个特殊情况。但是在实际系统中也会存在多个特殊条件同时出现的状况
+
+下面来对多个条件同时出现的状况进行分析
+
+1.  单独讨论Exception
+
+    因为Y86-64对异常的处理设计已经认真的考虑了流水线中的其他指令[^注释28]，因此不必担心涉及到Exception的组合
+2.  其他三种条件的组合分析
+
+    load/use hazard必须满足EXE阶段是load，而ID阶段是use
+    mispredicted branch必须满足EXE阶段是jump
+    ret指令可以在ID、EXE、MEM，只不过在EXE、MEM的话，前面需要是bubble
+
+    因此这三种情况的满足条件分析图如下：
+
+    ![](image/image_Rk-91t-BrB.png)
+
+    就组合来说，只存在load/use和ret在ID阶段的组合B，以及Mispredicted和ret在ID阶段的组合A这两种情况
+    1.  组合A
+
+        组合A的实现即EXE段是一个预测失败的jump，ID阶段是分支目标处的ret指令，因为分支预测失败所以该ret指令应该被取消
+
+        组合期待的行为是：
+
+        ![](image/image_56FJebgmtB.png)
+
+        即按照Mispredicted的逻辑来处理组合A，只不过阻塞F阶段的取指；而下一个时钟周期的PC并不会选择F寄存器中的pred\_PC而是选择M\_valP，因此并不会有什么错误的影响
+    2.  组合B
+
+        组合B的实现即load修改了%rsp寄存器，而ret指令需要%rsp寄存器读取栈中的返回地址，因此需要抑制ret指令
+
+        组合的期待行为是：用stall>bubble>normal
+
+        ![](image/image_n4MBM0_NHR.png)
+
+        之前的PIPE设计并不能正确处理这种组合，它会将D寄存器的stall和bubble均设置为1，因此需要修改PIPE这方面的设计实现组合B的处理
+
+### Control Logic Implementation
+
+![](image/image_DXrQlHN-oS.png)
+
+上图Figure4.68展示了流水线控制逻辑的整体结构。基于来自流水线寄存器和流水段的信号，流水线控制逻辑可以产生各个流水线寄存器的stall和bubble信号，也可以决定是否CC应该被更新
+
+可以结合特殊情况的检测条件[🖼️ 图片](image/image_YYV--IbCqX.png "🖼️ 图片")以及执行的行为简单表格来产生流水线控制逻辑的HCL描述
+
+F寄存器只需要Stall
+
+当出现Load/use hazard、ret以及Misprediction和ID阶段的ret组合的情况需要stall F寄存器
+
+```c
+bool F_stall= 
+  E_icode in {IMRMOVQ,IPOPQ} && E_dstM in {d_srcA,d_srcB}||IRET in {D_icode,E_icode,M_icode};
+ //Mispredited和ID阶段的RET组合起来，是等价于IRET==D_icode的
+
+```
+
+D寄存器既需要Stall也需要Bubble
+
+D寄存器需要Stall是在Load/use hazard以及Load/use hazard和ret组合的情况，即是Load/use hazard的情况；需要Bubble的情况是ret和mispredicted以及ret和mispredicted的组合，注意iret是不和load结合的
+
+```c
+bool D_stall=  E_icode in {IMRMOVQ,IPOPQ} && E_dstM in {d_srcA,d_srcB};
+
+bool D_bubble = IRET in {D_icode,E_icode,M_code} && !(E_icode in {IMRMOVQ,IPOPQ} && E_dstM in {d_srcA,d_srcB}) || (E_icode==IJXX&&!e_cnd);
+```
+
+E寄存器需要Bubble
+
+E寄存器需要Bubble是在Load/use hazard、Mispredicted以及load和ret的组合以及mispredicted和ret的组合，因此最后就是load和mispredicted两种情况
+
+```c
+bool E_bubble = E_icode in {IMRMOVQ,IPOPQ} && E_dstM in {d_srcA,d_srcB}|| (E_icode==IJXX&&!e_cnd);
+```
+
+M寄存器需要Bubble
+
+在下一个周期向访存阶段插入气泡，需要检查当前周期中访存或者写回阶段是否有异常
+
+```c
+bool M_bubble = W_stat in {ADR,INS,HLT} || m_stat in {ADR,INS,HLT};
+```
+
+W寄存器需要Stall
+
+W寄存器需要Stall是在异常到达WB阶段下
+
+```c
+bool W_stall = W_stat in {ADR,INS,HLT};
+```
+
+> 测试所完成的设计
+>
+> 一些设计上的挑战是对不常见的指令(popq %rsp)或者不常见的指令组合(mispredicted branch+ret)
+>
+> ![](image/image_Wj4_wr3Vch.png)
+
+## 4.5.9 Performance Analysis
+
+需要流水线控制逻辑采取特殊操作的条件都会导致流水线达不到每个时钟周期发出新指令的目标。可以通过确定bubble插入流水线的频率来衡量这种低效率，因为bubble是会导致流水线空闲——ret指令需要三个bubble、Mispredicted需要两个bubble、Load/use hazard需要一个bubble。
+
+至于衡量这种低效率对整体性能的影响可以通过计算PIPE执行的每条指令所需的平均时钟周期的估计值——CPI，CPI是流水线平均吞吐量IPC的倒数
+
+如果我们忽略异常带来的性能损失（异常的定义表明它是很少出现的），另一种思考CPI的方法是，假设我们在处理器上运行某个基准程序，并观察执行阶段的运行。每个周期，执行阶段要么会处理一条指令，然后这条指令继续通过剩下的阶段，直到完成；要么会处理一个由于三种特殊情况之一而插入的气泡。如果这个阶段一共处理了$C_i$条指令和$ C_b  $个气泡，那么处理器总共需要大约$C_i+C_b$个时钟周期来执行C条指令。我们说“大约”是因为忽路了启动指令通过流水线的周期。于是，可以用如下方法来计算这个基准程序的CPI：
+
+$$
+\mathrm{CPI}=\frac{C_{i}+C_{b}}{C_{i}}=1.0+\frac{C_{b}}{C_{i}}
+$$
+
+处罚项$C_b/C_i$表示一条指令平均要插入多少个气泡，因为剩下的三种特殊情况均只能由三种指令类型引起，从而导致气泡的插入，因此可以将处罚项分解成三个部分
+
+$$
+\mathrm{CPI}=1.0+l p+m p+r p
+$$
+
+lp表示由于Load/use hazard造成插入气泡的平均数$lp=\frac{load/use hazard的指令数}{指令总数}$
+mp表示由于mispredicted造成插入气泡的平均数$\frac{Mispredicted指令数}{总指令数}$
+ret表示由于ret指令造成插入气泡的平均数$ \frac{ret指令数}{总指令数}  $
+
+为了估计每种处罚，我们需要知道相关指令（加载、条件转移和返回）的出现频率，以及对每种指令特殊情况出现的频率。对CPI的计算，我们使用下面这组频率：
+
+-   load指令(mrmovq和popq)占所有执行指令的25%，其中20%会导致Load/use hazard
+-   条件分支指令占所有执行指令的20%，其中60%会分支跳转，而40%不会分支跳转
+-   返回指令占所有执行指令的2%。
+
+因此可以估算当前CPI：
+
+$$
+CPI=1.0+0.25\times0.20\times1+0.20\times0.40\times2+0.02\times3=1.27
+$$
+
+![](image/image_0dc0q7FNiD.png)
+
+因为由于Mispredicted branch导致的处罚所占的比例0.16/0.27较大，因此可以增加对预测分支的处理，提高预测的准确率，降低这一项的处罚
+
+## 4.5.10 Unfinished Business
+
+目前设计的PIPE已实现指令流水线以及特殊情况的控制，但是要达到一个现代实用的处理器，还缺乏一些特征，比如下面所叙述的多周期指令和与存储系统的接口
+
+#### 多周期指令
+
+#### 与存储系统的接口
 
 [^注释1]: 使用汇编语言或者机器语言编写程序的程序员
 
@@ -1723,3 +1976,9 @@ m_stat = [
 [^注释24]: MEM段需要根据访数据内存地址重新计算Stat因此是m\_stat
 
 [^注释25]: 在valA和valP中二选一
+
+[^注释26]: d\_srcA和d\_srcB与E\_dstM有相等，且E\_icode是IMRMOVQ，IPOPQ
+
+[^注释27]: For example, to inject a bubble into pipeline register D, we want the icode field to be set to the constant value INOP (Figure 4.26). To inject a bubble into pipeline register E, we want the icode field to be set to INOP and the dstE, dstM, srcA, and srcB fields to be set to the constant RNONE.
+
+[^注释28]: 异常指令之前的正常执行，异常指令之后的不能修改程序状态
