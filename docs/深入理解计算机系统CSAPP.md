@@ -7,3 +7,7 @@
 [3 Machine-Level Representation of Programs](<3 Machine-Level Representation/3 Machine-Level Representation of Programs.md> "3 Machine-Level Representation of Programs")
 
 [4 Processor Architecture](<4 Processor Architecture/4 Processor Architecture.md> "4 Processor Architecture")
+
+[5 Optimizing Program
+Performance](<5 Optimizing Program&#xA;Performan/5 Optimizing Program&#xA;Performance.md> "5 Optimizing Program
+Performance")
